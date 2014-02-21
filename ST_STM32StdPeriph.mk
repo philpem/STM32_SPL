@@ -10,6 +10,7 @@ $(PFX)_VALID_PLATFORMS := STM32F030 STM32F031 STM32F051 STM32F072 STM32F042 STM2
 $(PFX)_VALID_PLATFORMS += STM32F10X_LD_VL STM32F10X_MD_VL STM32F10X_HD_VL STM32F10X_CL
 $(PFX)_VALID_PLATFORMS += STM32F2XX
 $(PFX)_VALID_PLATFORMS += STM32F30X
+$(PFX)_VALID_PLATFORMS += STM32F37X
 #$(PFX)_VALID_PLATFORMS += STM32L1XX_MD STM32L1XX_MDP STM32L1XX_HD
 #$(PFX)_VALID_PLATFORMS += STM32F40_41xxx STM32F427_437xx STM32F429_439xx STM32F401xx
 ifeq ($(filter $($(PFX)_VALID_PLATFORMS),$(PLATFORM)),)
@@ -39,6 +40,11 @@ endif
 ifneq ($(filter STM32F30X,$(PLATFORM)),)
   $(PFX)_PFMDIR := STM32F30x
 endif
+
+ifneq ($(filter STM32F37X,$(PLATFORM)),)
+  $(PFX)_PFMDIR := STM32F37x
+endif
+
 
 #ifneq ($(filter STM32L1XX_MD STM32L1XX_MDP STM32L1XX_HD,$(PLATFORM)),)
 #  $(PFX)_PFMDIR := STM32L1xx
@@ -82,6 +88,16 @@ endif
 ifeq ($($(PFX)_PFMDIR),STM32F30x)
   $(PFX)_MODULES := adc can comp crc dac dbgmcu dma exti flash gpio i2c iwdg misc opamp pwr rcc rtc spi syscfg tim usart wwdg
   $(PFX)_PREFIX  := stm32f30x
+  $(PFX)_EXTRA   := 
+  $(PFX)_ARM_MATH:= ARM_MATH_CM3
+  # TODO: CPAL
+#  $(PFX)_EXTRA_INC:= $($(PFX)_PFMDIR)_I2C_CPAL_Driver/inc
+#  $(PFX)_EXTRA_SRC:= $($(PFX)_PFMDIR)_I2C_CPAL_Driver/src
+endif
+
+ifeq ($($(PFX)_PFMDIR),STM32F37x)
+  $(PFX)_MODULES := adc can cec comp crc dac dbgmcu dma exti flash gpio i2c iwdg misc pwr rcc rtc sdadc spi syscfg tim usart wwdg
+  $(PFX)_PREFIX  := stm32f37x
   $(PFX)_EXTRA   := 
   $(PFX)_ARM_MATH:= ARM_MATH_CM3
   # TODO: CPAL
