@@ -54,7 +54,7 @@ endif
 ifeq ($($(PFX)_PFMDIR),STM32F0xx)
   $(PFX)_MODULES := adc can cec comp crc crs dac dbgmcu dma exti flash gpio i2c iwdg misc pwr rcc rtc spi syscfg tim usart wwdg
   $(PFX)_PREFIX  := stm32f0xx
-  $(PFX)_ARM_MATH:= ARM_MATH_CM0_FAMILY
+  $(PFX)_ARM_MATH:= ARM_MATH_CM0
   # TODO: CPAL
 #  $(PFX)_EXTRA_INC:= $($(PFX)_PFMDIR)_CPAL_Driver/inc
 #  $(PFX)_EXTRA_SRC:= $($(PFX)_PFMDIR)_CPAL_Driver/src
