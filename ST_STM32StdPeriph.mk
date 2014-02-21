@@ -6,7 +6,10 @@ PFX:=VENDOR_ST_SPL_REQS
 $(PFX)_PFP := $(dir $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST)))
 
 # Validate the platform string
-$(PFX)_VALID_PLATFORMS := STM32F10X_LD_VL STM32F10X_MD_VL STM32F10X_HD_VL STM32F10X_CL STM32L1XX_MD STM32L1XX_MDP STM32L1XX_HD STM32F40_41xxx STM32F427_437xx STM32F429_439xx STM32F401xx
+$(PFX)_VALID_PLATFORMS := STM32F030 STM32F031 STM32F051 STM32F072 STM32F042 STM23F0XX_MD STM32F0XX_LD STM32F0XX_HD STM32F030X8 STM32F030X6
+#$(PFX)_VALID_PLATFORMS += STM32F10X_LD_VL STM32F10X_MD_VL STM32F10X_HD_VL STM32F10X_CL
+#$(PFX)_VALID_PLATFORMS += STM32L1XX_MD STM32L1XX_MDP STM32L1XX_HD
+#$(PFX)_VALID_PLATFORMS += STM32F40_41xxx STM32F427_437xx STM32F429_439xx STM32F401xx
 ifeq ($(filter $($(PFX)_VALID_PLATFORMS),$(PLATFORM)),)
   $(error PLATFORM is not valid!)
 endif
@@ -19,15 +22,18 @@ endif
 
 # Platform specific rules need to set up the Platform Directory (_PFMDIR).
 
-ifneq ($(filter STM32F10X_LD_VL STM32F10X_MD_VL STM32F10X_HD_VL STM32F10X_CL,$(PLATFORM)),)
-  $(PFX)_PFMDIR := STM32F10x
+ifneq ($(filter STM32F030 STM32F031 STM32F051 STM32F072 STM32F042 STM23F0XX_MD STM32F0XX_LD STM32F0XX_HD STM32F030X8 STM32F030X6,$(PLATFORM)),)
+  $(PFX)_PFMDIR := STM32F0xx
 endif
-ifneq ($(filter STM32L1XX_MD STM32L1XX_MDP STM32L1XX_HD,$(PLATFORM)),)
-  $(PFX)_PFMDIR := STM32L1xx
-endif
-ifneq ($(filter STM32F40_41xxx STM32F427_437xx STM32F429_439xx STM32F401xx,$(PLATFORM)),)
-  $(PFX)_PFMDIR := STM32F4xx
-endif
+#ifneq ($(filter STM32F10X_LD_VL STM32F10X_MD_VL STM32F10X_HD_VL STM32F10X_CL,$(PLATFORM)),)
+#  $(PFX)_PFMDIR := STM32F10x
+#endif
+#ifneq ($(filter STM32L1XX_MD STM32L1XX_MDP STM32L1XX_HD,$(PLATFORM)),)
+#  $(PFX)_PFMDIR := STM32L1xx
+#endif
+#ifneq ($(filter STM32F40_41xxx STM32F427_437xx STM32F429_439xx STM32F401xx,$(PLATFORM)),)
+#  $(PFX)_PFMDIR := STM32F4xx
+#endif
 
 
 #############################################################################
@@ -38,40 +44,46 @@ endif
 # Library specific options define two things: the list of modules available
 # for a given platform (_MODULES) and the filename prefix for each module
 # (_PREFIX).
-ifeq ($($(PFX)_PFMDIR),STM32F10x)
-  $(PFX)_MODULES := adc bkp can cec crc dac dbgmcu dma exti flash fsmc gpio i2c iwdg pwr rcc rtc sdio spi tim usart wwdg
-  $(PFX)_EXTRA   := misc
-  $(PFX)_PREFIX  := stm32f10x
-  $(PFX)_ARM_MATH:= ARM_MATH_CM3
+ifeq ($($(PFX)_PFMDIR),STM32F0xx)
+  $(PFX)_MODULES := adc can cec comp crc crs dac dbgmcu dma exti flash gpio i2c iwdg misc pwr rcc rtc spi syscfg tim usart wwdg
+  $(PFX)_PREFIX  := stm32f0xx
+  $(PFX)_ARM_MATH:= ARM_MATH_CM0_FAMILY
+  # TODO: CPAL
+#  $(PFX)_EXTRA_INC:= $($(PFX)_PFMDIR)_CPAL_Driver/inc
+#  $(PFX)_EXTRA_SRC:= $($(PFX)_PFMDIR)_CPAL_Driver/src
 endif
-ifeq ($($(PFX)_PFMDIR),STM32L1xx)
-  $(PFX)_MODULES := adc aes aes_util comp crc dac dbgmcu dma exti flash flash_ramfunc fsmc gpio i2c iwdg lcd opamp pwr rcc rtc sdio spi syscfg tim usart wwdg
-  $(PFX)_EXTRA   := misc
-  $(PFX)_PREFIX  := stm32l1xx
-  $(PFX)_ARM_MATH:= ARM_MATH_CM3
-endif
-ifeq ($($(PFX)_PFMDIR),STM32F4xx)
-  $(PFX)_MODULES := adc can crc cryp_aes cryp cryp_des cryp_tdes dac dbgmcu dcmi dma dma2d exti flash gpio hash hash_md5 hash_sha1 i2c iwdg ltdc pwr rcc rng rtc sai sdio spi syscfg tim usart wwdg
-  # Devices which have the FMC peripheral instead of FSMC
-  ifneq ($(filter STM32F427_437xx STM32F429_439xx,$(PLATFORM)),)
-    $(PFX)_MODULES += fmc
-  else
-    # Devices which have neither FMC nor FSMC
-    ifeq ($(filter STM32F401xx,$(PLATFORM)),)
-      $(PFX)_MODULES += fsmc
-    endif
-  endif
-  $(PFX)_EXTRA   := misc
-  $(PFX)_PREFIX  := stm32f4xx
-  $(PFX)_ARM_MATH:= ARM_MATH_CM4
-endif
+
+#ifeq ($($(PFX)_PFMDIR),STM32F10x)
+#  $(PFX)_MODULES := adc bkp can cec crc dac dbgmcu dma exti flash fsmc gpio i2c iwdg misc pwr rcc rtc sdio spi tim usart wwdg
+#  $(PFX)_PREFIX  := stm32f10x
+#  $(PFX)_ARM_MATH:= ARM_MATH_CM3
+#endif
+#ifeq ($($(PFX)_PFMDIR),STM32L1xx)
+#  $(PFX)_MODULES := adc aes aes_util comp crc dac dbgmcu dma exti flash flash_ramfunc fsmc gpio i2c iwdg lcd misc opamp pwr rcc rtc sdio spi syscfg tim usart wwdg
+#  $(PFX)_PREFIX  := stm32l1xx
+#  $(PFX)_ARM_MATH:= ARM_MATH_CM3
+#endif
+#ifeq ($($(PFX)_PFMDIR),STM32F4xx)
+#  $(PFX)_MODULES := adc can crc cryp_aes cryp cryp_des cryp_tdes dac dbgmcu dcmi dma dma2d exti flash gpio hash hash_md5 hash_sha1 i2c iwdg ltdc misc pwr rcc rng rtc sai sdio spi syscfg tim usart wwdg
+#  # Devices which have the FMC peripheral instead of FSMC
+#  ifneq ($(filter STM32F427_437xx STM32F429_439xx,$(PLATFORM)),)
+#    $(PFX)_MODULES += fmc
+#  else
+#    # Devices which have neither FMC nor FSMC
+#    ifeq ($(filter STM32F401xx,$(PLATFORM)),)
+#      $(PFX)_MODULES += fsmc
+#    endif
+#  endif
+#  $(PFX)_PREFIX  := stm32f4xx
+#  $(PFX)_ARM_MATH:= ARM_MATH_CM4
+#endif
 
 # Convert the module list into a list of files we need to build
-$(PFX)_REQS := $(addsuffix .o, $(addprefix $($(PFX)_PFP)obj/,$(addprefix $($(PFX)_PREFIX)_,$($(PFX)_MODULES)) $($(PFX)_EXTRA)))
+$(PFX)_REQS := $(addsuffix .o, $(addprefix $($(PFX)_PFP)obj/,$(addprefix $($(PFX)_PREFIX)_,$($(PFX)_MODULES))))
 
 # Create a list of files generated by the CMSIS DSP library
-$(PFX)_CMSIS_DSP := $(shell find $($(PFX)_PFP)CMSIS/DSP_Lib/Source -name *.c)
-$(PFX)_CMSIS_DSP := $(subst $($(PFX)_PFP),$($(PFX)_PFP)obj/,$($(PFX)_CMSIS_DSP:.c=.o))
+#$(PFX)_CMSIS_DSP := $(shell find $($(PFX)_PFP)CMSIS/DSP_Lib/Source -name *.c)
+#$(PFX)_CMSIS_DSP := $(subst $($(PFX)_PFP),$($(PFX)_PFP)obj/,$($(PFX)_CMSIS_DSP:.c=.o))
 
 #############################################################################
 # Global options and build rules
