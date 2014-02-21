@@ -1,0 +1,8 @@
+syntax: glob
+*~
+*.orig
+*.bak
+.*.sw?
+*.a
+*.o
+*.lib
