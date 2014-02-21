@@ -8,6 +8,7 @@ $(PFX)_PFP := $(dir $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
 # Validate the platform string
 $(PFX)_VALID_PLATFORMS := STM32F030 STM32F031 STM32F051 STM32F072 STM32F042 STM23F0XX_MD STM32F0XX_LD STM32F0XX_HD STM32F030X8 STM32F030X6
 $(PFX)_VALID_PLATFORMS += STM32F10X_LD_VL STM32F10X_MD_VL STM32F10X_HD_VL STM32F10X_CL
+$(PFX)_VALID_PLATFORMS += STM32F2XX
 #$(PFX)_VALID_PLATFORMS += STM32L1XX_MD STM32L1XX_MDP STM32L1XX_HD
 #$(PFX)_VALID_PLATFORMS += STM32F40_41xxx STM32F427_437xx STM32F429_439xx STM32F401xx
 ifeq ($(filter $($(PFX)_VALID_PLATFORMS),$(PLATFORM)),)
@@ -28,6 +29,10 @@ endif
 
 ifneq ($(filter STM32F10X_LD_VL STM32F10X_MD_VL STM32F10X_HD_VL STM32F10X_CL,$(PLATFORM)),)
   $(PFX)_PFMDIR := STM32F10x
+endif
+
+ifneq ($(filter STM32F2XX,$(PLATFORM)),)
+  $(PFX)_PFMDIR := STM32F2xx
 endif
 
 #ifneq ($(filter STM32L1XX_MD STM32L1XX_MDP STM32L1XX_HD,$(PLATFORM)),)
@@ -58,6 +63,13 @@ endif
 ifeq ($($(PFX)_PFMDIR),STM32F10x)
   $(PFX)_MODULES := adc bkp can cec crc dac dbgmcu dma exti flash fsmc gpio i2c iwdg pwr rcc rtc sdio spi tim usart wwdg
   $(PFX)_PREFIX  := stm32f10x
+  $(PFX)_EXTRA   := misc
+  $(PFX)_ARM_MATH:= ARM_MATH_CM3
+endif
+
+ifeq ($($(PFX)_PFMDIR),STM32F2xx)
+  $(PFX)_MODULES := adc can crc cryp_aes cryp cryp_des cryp_tdes dac dbgmcu dcmi dma exti flash fsmc gpio hash hash_md5 hash_sha1 i2c iwdg pwr rcc rng rtc sdio spi syscfg tim usart wwdg
+  $(PFX)_PREFIX  := stm32f2xx
   $(PFX)_EXTRA   := misc
   $(PFX)_ARM_MATH:= ARM_MATH_CM3
 endif
