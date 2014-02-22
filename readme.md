@@ -1,7 +1,7 @@
 STM32 Standard Peripheral Library (Universal Version)
 =====================================================
 
-**Note - the repository was recreated fron scratch on the 22nd of February**. If you cloned or forked the repository before this date, you will need to delete and re-clone.
+**Note - the repository was recreated fron scratch on the 22nd of February 2014**. If you cloned or forked the repository before this date, you will need to delete and re-clone.
 
 This is a modified, unofficial version of the STMicroelectronics STM32 Standard Peripheral Library which attempts to support several STM32 platforms from a single source tree.
 
