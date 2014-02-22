@@ -12,6 +12,7 @@ $(PFX)_VALID_PLATFORMS += STM32F2XX
 $(PFX)_VALID_PLATFORMS += STM32F30X
 $(PFX)_VALID_PLATFORMS += STM32F37X
 $(PFX)_VALID_PLATFORMS += STM32F40_41xxx STM32F427_437xx STM32F429_439xx STM32F401xx
+$(PFX)_VALID_PLATFORMS += STM32L1XX_MD STM32L1XX_MDP STM32L1XX_HD
 
 ifeq ($(filter $($(PFX)_VALID_PLATFORMS),$(PLATFORM)),)
   $(error PLATFORM is not valid!)
@@ -49,6 +50,9 @@ ifneq ($(filter STM32F40_41xxx STM32F427_437xx STM32F429_439xx STM32F401xx,$(PLA
   $(PFX)_PFMDIR := STM32F4xx
 endif
 
+ifneq ($(filter STM32L1XX_MD STM32L1XX_MDP STM32L1XX_HD,$(PLATFORM)),)
+  $(PFX)_PFMDIR := STM32L1xx
+endif
 
 
 #############################################################################
@@ -118,6 +122,12 @@ ifeq ($($(PFX)_PFMDIR),STM32F4xx)
   $(PFX)_ARM_MATH:= ARM_MATH_CM4
 endif
 
+ifeq ($($(PFX)_PFMDIR),STM32L1xx)
+  $(PFX)_MODULES := adc aes aes_util comp crc dac dbgmcu dma exti flash flash_ramfunc fsmc gpio i2c iwdg lcd opamp pwr rcc rtc sdio spi syscfg tim usart wwdg
+  $(PFX)_EXTRA   := misc
+  $(PFX)_PREFIX  := stm32l1xx
+  $(PFX)_ARM_MATH:= ARM_MATH_CM3
+endif
 
 # Convert the module list into a list of files we need to build
 $(PFX)_REQS := $(addsuffix .o, $(addprefix $($(PFX)_PFP)obj/,$(addprefix $($(PFX)_PREFIX)_,$($(PFX)_MODULES)) $($(PFX)_EXTRA)))
