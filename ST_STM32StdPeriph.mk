@@ -13,6 +13,7 @@ $(PFX)_VALID_PLATFORMS += STM32F30X
 $(PFX)_VALID_PLATFORMS += STM32F37X
 $(PFX)_VALID_PLATFORMS += STM32F40_41xxx STM32F427_437xx STM32F429_439xx STM32F401xx
 $(PFX)_VALID_PLATFORMS += STM32L1XX_MD STM32L1XX_MDP STM32L1XX_HD
+$(PFX)_VALID_PLATFORMS += STM32W108C8 STM32W108CB STM32W108CC STM32W108CZ STM32W108HB
 
 ifeq ($(filter $($(PFX)_VALID_PLATFORMS),$(PLATFORM)),)
   $(error PLATFORM is not valid!)
@@ -53,6 +54,11 @@ endif
 ifneq ($(filter STM32L1XX_MD STM32L1XX_MDP STM32L1XX_HD,$(PLATFORM)),)
   $(PFX)_PFMDIR := STM32L1xx
 endif
+
+ifneq ($(filter STM32W108C8 STM32W108CB STM32W108CC STM32W108CZ STM32W108HB,$(PLATFORM)),)
+  $(PFX)_PFMDIR := STM32W108xx
+endif
+
 
 
 #############################################################################
@@ -126,6 +132,12 @@ ifeq ($($(PFX)_PFMDIR),STM32L1xx)
   $(PFX)_MODULES := adc aes aes_util comp crc dac dbgmcu dma exti flash flash_ramfunc fsmc gpio i2c iwdg lcd opamp pwr rcc rtc sdio spi syscfg tim usart wwdg
   $(PFX)_EXTRA   := misc
   $(PFX)_PREFIX  := stm32l1xx
+  $(PFX)_ARM_MATH:= ARM_MATH_CM3
+endif
+
+ifeq ($($(PFX)_PFMDIR),STM32W108xx)
+  $(PFX)_MODULES := adc clk exti flash gpio misc pwr rst sc slptim tim wdg
+  $(PFX)_PREFIX  := stm32w108xx
   $(PFX)_ARM_MATH:= ARM_MATH_CM3
 endif
 
