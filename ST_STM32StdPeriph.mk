@@ -176,20 +176,28 @@ vendor_st_stm32_stdperiph_clean:
 # Weird magic present below this point...
 #############################################################################
 
+# Ensure the SPL's 'obj' directory is created
+$($(PFX)_PFP)obj:
+	@echo "   MKDIR[stdperiph] $@"
+	@mkdir -p $@
+	@touch $@/.keep
+
+$($(PFX)_REQS) $($(PFX)_CMSIS_DSP): | $($(PFX)_PFP)obj
+
 # Build the SPL itself
 $(SPL_LIB): $($(PFX)_REQS) $($(PFX)_CMSIS_DSP)
-	@echo "   AR[stdperiph] $@"
+	@echo "   AR[stdperiph] $(@F)"
 	$(Q)$(AR) -cr $@ $^
 
 # Build rule for SPD source files
 $($(PFX)_PFP)obj/%.o: $($(PFX)_PFP)$($(PFX)_PFMDIR)_StdPeriph_Driver/src/%.c
 	$(Q)test -d $(@D) || mkdir -pm 775 $(@D)
-	@echo "   CC[stdperiph] $^"
+	@echo "   CC[stdperiph] $(^F)"
 	$(Q)$(CC) -c $($(PFX)_CFLAGS) $(CFLAGS) -o $@ $<
 
 # Build rule for CMSIS source files
 $($(PFX)_PFP)obj/CMSIS/%.o: $($(PFX)_PFP)CMSIS/%.c
 	$(Q)test -d $(@D) || mkdir -pm 775 $(@D)
-	@echo "   CC[cmsis]     $^"
+	@echo "   CC[cmsis]     $(^F)"
 	$(Q)$(CC) -c $($(PFX)_CFLAGS) $(CFLAGS) $(addprefix -D,$($(PFX)_ARM_MATH)) -o $@ $<
 
