@@ -178,15 +178,18 @@ vendor_st_stm32_stdperiph_clean:
 
 # Build the SPL itself
 $(SPL_LIB): $($(PFX)_REQS) $($(PFX)_CMSIS_DSP)
-	$(AR) -cr $@ $^
+	@echo "   AR[stdperiph] $@"
+	$(Q)$(AR) -cr $@ $^
 
 # Build rule for SPD source files
 $($(PFX)_PFP)obj/%.o: $($(PFX)_PFP)$($(PFX)_PFMDIR)_StdPeriph_Driver/src/%.c
 	$(Q)test -d $(@D) || mkdir -pm 775 $(@D)
+	@echo "   CC[stdperiph] $^"
 	$(Q)$(CC) -c $($(PFX)_CFLAGS) $(CFLAGS) -o $@ $<
 
 # Build rule for CMSIS source files
 $($(PFX)_PFP)obj/CMSIS/%.o: $($(PFX)_PFP)CMSIS/%.c
 	$(Q)test -d $(@D) || mkdir -pm 775 $(@D)
+	@echo "   CC[cmsis]     $^"
 	$(Q)$(CC) -c $($(PFX)_CFLAGS) $(CFLAGS) $(addprefix -D,$($(PFX)_ARM_MATH)) -o $@ $<
 
