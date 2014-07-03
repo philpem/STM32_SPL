@@ -404,7 +404,7 @@ typedef struct
                            ((FLAG) == RCC_FLAG_PINRST) || ((FLAG) == RCC_FLAG_PORRST) || \
                            ((FLAG) == RCC_FLAG_SFTRST) || ((FLAG) == RCC_FLAG_IWDGRST)|| \
                            ((FLAG) == RCC_FLAG_WWDGRST)|| ((FLAG) == RCC_FLAG_LPWRRST)|| \
-                           ((FLAG) == RCC_FLAG_WWDGRST)|| ((FLAG) == RCC_FLAG_LSECSS))
+                           ((FLAG) == RCC_FLAG_OBLRST) || ((FLAG) == RCC_FLAG_LSECSS))
 
 #define IS_RCC_HSI_CALIBRATION_VALUE(VALUE) ((VALUE) <= 0x1F)
 #define IS_RCC_MSI_CALIBRATION_VALUE(VALUE) ((VALUE) <= 0x3F)
