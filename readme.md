@@ -39,6 +39,7 @@ Supported platforms
     * Medium Density (STM32L1XX_MD)
     * Medium Density Plus (STM32L1XX_MDP)
     * High Density (STM32L1XX_HD)
+    * XL-density (STM32L1XX_XL)
 * STM32W100xx
     * STM32W108C8
     * STM32W108CB

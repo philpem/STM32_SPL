@@ -1,8 +1,8 @@
-;******************** (C) COPYRIGHT 2013 STMicroelectronics ********************
+;******************** (C) COPYRIGHT 2014 STMicroelectronics ********************
 ;* File Name          : startup_stm32l1xx_mdp.s
 ;* Author             : MCD Application Team
-;* Version            : V1.2.0
-;* Date               : 22-February-2013
+;* Version            : V1.3.2
+;* Date               : 10-April-2014
 ;* Description        : STM32L1xx Ultra Low Power Medium-density Plus Devices vector 
 ;*                      table for MDK-ARM toolchain.
 ;*                      This module performs:

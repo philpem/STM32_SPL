@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file      startup_stm32l1xx_md.s
   * @author    MCD Application Team
-  * @version   V1.2.0
-  * @date      22-February-2013
+  * @version   V1.3.2
+  * @date      10-April-2014
   * @brief     STM32L1xx Ultra Low Power Medium-density Devices vector table for 
   *            RIDE7 toolchain.
   *            This module performs:
@@ -17,7 +17,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2014 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
