@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file      startup_stm32f30x.s
   * @author    MCD Application Team
-  * @version   V1.0.0
-  * @date      04-September-2012
+  * @version   V1.1.1
+  * @date      28-March-2014
   * @brief     stm32f30x vector table for Atollic TrueSTUDIO toolchain.
   *            This module performs:
   *                - Set the initial SP
@@ -17,7 +17,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2014 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -54,7 +54,6 @@ defined in linker script */
 /* end address for the .bss section. defined in linker script */
 .word	_ebss
 
-.equ  BootRAM,        0xF1E0F85F
 /**
  * @brief  This is the code that gets called when the processor first
  *          starts execution following a reset event. Only the absolutely
@@ -68,10 +67,11 @@ defined in linker script */
 	.weak	Reset_Handler
 	.type	Reset_Handler, %function
 Reset_Handler:
+	ldr   sp, =_estack      /* Set stack pointer */
 
 /* Copy the data segment initializers from flash to SRAM */
-  movs	r1, #0
-  b	LoopCopyDataInit
+	movs	r1, #0
+	b	LoopCopyDataInit
 
 CopyDataInit:
 	ldr	r3, =_sidata
@@ -98,9 +98,9 @@ LoopFillZerobss:
 	bcc	FillZerobss
 
 /* Call the clock system intitialization function.*/
-    bl  SystemInit
+	bl  SystemInit
 /* Call static constructors */
-    bl __libc_init_array
+	bl __libc_init_array
 /* Call the application's entry point.*/
 	bl	main
 

@@ -1,16 +1,16 @@
 /**
   ******************************************************************************
-  * @file    Project/STM32F30x_StdPeriph_Templates/stm32f30x_it.c 
+  * @file    stm32f30x_it.c 
   * @author  MCD Application Team
-  * @version V1.0.0
-  * @date    23-October-2012
+  * @version V1.1.0
+  * @date    04-April-2014
   * @brief   Main Interrupt Service Routines.
   *          This file provides template for all exceptions handler and 
   *          peripherals interrupt service routine.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2014 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -29,9 +29,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f30x_it.h"
-#include "main.h"
 
-/** @addtogroup Template_Project
+/** @addtogroup STM32F30x_StdPeriph_Templates
   * @{
   */
 
@@ -141,7 +140,6 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
-  TimingDelay_Decrement();
 }
 
 /******************************************************************************/

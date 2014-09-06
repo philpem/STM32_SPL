@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    stm32f30x_i2c_cpal_usercallback.c
   * @author  MCD Application Team
-  * @version V1.0.1
-  * @date    23-October-2012
+  * @version V1.1.0
+  * @date    04-April-2014
   * @brief   This file provides all the CPAL UserCallback functions.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2014 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.

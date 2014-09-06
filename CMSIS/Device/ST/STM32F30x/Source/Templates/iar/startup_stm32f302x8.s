@@ -1,9 +1,9 @@
 ;/******************** (C) COPYRIGHT 2014 STMicroelectronics ********************
-;* File Name          : startup_stm32f30x.s
+;* File Name          : startup_stm32f302x8.s
 ;* Author             : MCD Application Team
 ;* Version            : V1.1.1
 ;* Date               : 28-March-2014
-;* Description        : STM32F30x devices vector table for EWARM toolchain.
+;* Description        : STM32F302x8 devices vector table for EWARM toolchain.
 ;*                      This module performs:
 ;*                      - Set the initial SP
 ;*                      - Set the initial PC == _iar_program_start,
@@ -95,7 +95,7 @@ __vector_table
                 DCD     DMA1_Channel5_IRQHandler          ; DMA1 Channel 5                                   
                 DCD     DMA1_Channel6_IRQHandler          ; DMA1 Channel 6                                   
                 DCD     DMA1_Channel7_IRQHandler          ; DMA1 Channel 7                                   
-                DCD     ADC1_2_IRQHandler                 ; ADC1 and ADC2                            
+                DCD     ADC1_IRQHandler                   ; ADC1                            
                 DCD     USB_HP_CAN1_TX_IRQHandler         ; USB Device High Priority or CAN1 TX                                               
                 DCD     USB_LP_CAN1_RX0_IRQHandler        ; USB Device Low Priority or CAN1 RX0                                               
                 DCD     CAN1_RX1_IRQHandler               ; CAN1 RX1                                               
@@ -106,13 +106,13 @@ __vector_table
                 DCD     TIM1_TRG_COM_TIM17_IRQHandler     ; TIM1 Trigger and Commutation and TIM17
                 DCD     TIM1_CC_IRQHandler                ; TIM1 Capture Compare                                   
                 DCD     TIM2_IRQHandler                   ; TIM2                                            
-                DCD     TIM3_IRQHandler                   ; TIM3                                            
-                DCD     TIM4_IRQHandler                   ; TIM4                                            
+                DCD     0                                 ; Reserved                                            
+                DCD     0                                 ; Reserved                                        
                 DCD     I2C1_EV_IRQHandler                ; I2C1 Event                                             
                 DCD     I2C1_ER_IRQHandler                ; I2C1 Error                                             
                 DCD     I2C2_EV_IRQHandler                ; I2C2 Event                                             
                 DCD     I2C2_ER_IRQHandler                ; I2C2 Error                                               
-                DCD     SPI1_IRQHandler                   ; SPI1                                            
+                DCD     0                                 ; Reserved                                        
                 DCD     SPI2_IRQHandler                   ; SPI2                                            
                 DCD     USART1_IRQHandler                 ; USART1                                          
                 DCD     USART2_IRQHandler                 ; USART2                                          
@@ -120,37 +120,37 @@ __vector_table
                 DCD     EXTI15_10_IRQHandler              ; External Line[15:10]s                                  
                 DCD     RTC_Alarm_IRQHandler              ; RTC Alarm (A and B) through EXTI Line                  
                 DCD     USBWakeUp_IRQHandler              ; USB Wakeup through EXTI line                        
-                DCD     TIM8_BRK_IRQHandler               ; TIM8 Break                  
-                DCD     TIM8_UP_IRQHandler                ; TIM8 Update                
-                DCD     TIM8_TRG_COM_IRQHandler           ; TIM8 Trigger and Commutation
-                DCD     TIM8_CC_IRQHandler                ; TIM8 Capture Compare                                   
-                DCD     ADC3_IRQHandler                   ; ADC3                                           
+                DCD     0                                 ; Reserved                  
+                DCD     0                                 ; Reserved                
+                DCD     0                                 ; Reserved
+                DCD     0                                 ; Reserved                                   
+                DCD     0                                 ; Reserved                                       
                 DCD     0                                 ; Reserved                                            
                 DCD     0                                 ; Reserved                                            
                 DCD     0                                 ; Reserved                                            
                 DCD     SPI3_IRQHandler                   ; SPI3                                            
-                DCD     UART4_IRQHandler                  ; UART4                                           
-                DCD     UART5_IRQHandler                  ; UART5                                           
+                DCD     0                                 ; Reserved                                        
+                DCD     0                                 ; Reserved                                        
                 DCD     TIM6_DAC_IRQHandler               ; TIM6 and DAC1&2 underrun errors                   
-                DCD     TIM7_IRQHandler                   ; TIM7                   
-                DCD     DMA2_Channel1_IRQHandler          ; DMA2 Channel 1                                   
-                DCD     DMA2_Channel2_IRQHandler          ; DMA2 Channel 2                                   
-                DCD     DMA2_Channel3_IRQHandler          ; DMA2 Channel 3                                   
-                DCD     DMA2_Channel4_IRQHandler          ; DMA2 Channel 4                                   
-                DCD     DMA2_Channel5_IRQHandler          ; DMA2 Channel 5                                   
-                DCD     ADC4_IRQHandler                   ; ADC4                                        
+                DCD     0                                 ; Reserved               
+                DCD     0                                 ; Reserved                                   
+                DCD     0                                 ; Reserved                                   
+                DCD     0                                 ; Reserved                                   
+                DCD     0                                 ; Reserved                                   
+                DCD     0                                 ; Reserved                                   
+                DCD     0                                 ; Reserved                                        
                 DCD     0                                 ; Reserved                      
                 DCD     0                                 ; Reserved                                               
-                DCD     COMP1_2_3_IRQHandler              ; COMP1, COMP2 and COMP3                                               
-                DCD     COMP4_5_6_IRQHandler              ; COMP4, COMP5 and COMP6                                              
-                DCD     COMP7_IRQHandler                  ; COMP7                                               
+                DCD     COMP2_IRQHandler                  ; COMP2                                               
+                DCD     COMP4_6_IRQHandler                ; COMP4 and COMP6                                              
+                DCD     0                                 ; Reserved                                               
                 DCD     0                                 ; Reserved                                      
                 DCD     0                                 ; Reserved                                   
                 DCD     0                                 ; Reserved                                   
                 DCD     0                                 ; Reserved                                   
                 DCD     0                                 ; Reserved                                           
-                DCD     0                                 ; Reserved                                             
-                DCD     0                                 ; Reserved                                             
+                DCD     I2C3_EV_IRQHandler                ; I2C3 Event                                             
+                DCD     I2C3_ER_IRQHandler                ; I2C3 Error                                             
                 DCD     USB_HP_IRQHandler                 ; USB High Priority remap                       
                 DCD     USB_LP_IRQHandler                 ; USB Low Priority remap                    
                 DCD     USBWakeUp_RMP_IRQHandler          ; USB Wakeup remap through EXTI                         
@@ -309,10 +309,10 @@ DMA1_Channel6_IRQHandler
 DMA1_Channel7_IRQHandler  
         B DMA1_Channel7_IRQHandler
 
-        PUBWEAK ADC1_2_IRQHandler
+        PUBWEAK ADC1_IRQHandler
         SECTION .text:CODE:REORDER:NOROOT(1)
-ADC1_2_IRQHandler  
-        B ADC1_2_IRQHandler
+ADC1_IRQHandler  
+        B ADC1_IRQHandler
 
         PUBWEAK USB_HP_CAN1_TX_IRQHandler
         SECTION .text:CODE:REORDER:NOROOT(1) 
@@ -364,16 +364,6 @@ TIM1_CC_IRQHandler
 TIM2_IRQHandler  
         B TIM2_IRQHandler
 
-        PUBWEAK TIM3_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)
-TIM3_IRQHandler  
-        B TIM3_IRQHandler
-
-        PUBWEAK TIM4_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)
-TIM4_IRQHandler  
-        B TIM4_IRQHandler
-
         PUBWEAK I2C1_EV_IRQHandler
         SECTION .text:CODE:REORDER:NOROOT(1) 
 I2C1_EV_IRQHandler  
@@ -393,11 +383,6 @@ I2C2_EV_IRQHandler
         SECTION .text:CODE:REORDER:NOROOT(1) 
 I2C2_ER_IRQHandler  
         B I2C2_ER_IRQHandler
-
-        PUBWEAK SPI1_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)
-SPI1_IRQHandler  
-        B SPI1_IRQHandler
 
         PUBWEAK SPI2_IRQHandler
         SECTION .text:CODE:REORDER:NOROOT(1)
@@ -434,101 +419,35 @@ RTC_Alarm_IRQHandler
 USBWakeUp_IRQHandler  
         B USBWakeUp_IRQHandler
       
-        PUBWEAK TIM8_BRK_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)    
-TIM8_BRK_IRQHandler  
-        B TIM8_BRK_IRQHandler
-
-        PUBWEAK TIM8_UP_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)    
-TIM8_UP_IRQHandler  
-        B TIM8_UP_IRQHandler
-
-        PUBWEAK TIM8_TRG_COM_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)    
-TIM8_TRG_COM_IRQHandler  
-        B TIM8_TRG_COM_IRQHandler
-
-        PUBWEAK TIM8_CC_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1) 
-TIM8_CC_IRQHandler  
-        B TIM8_CC_IRQHandler
-
-        PUBWEAK ADC3_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1) 
-ADC3_IRQHandler  
-        B ADC3_IRQHandler
-
         PUBWEAK SPI3_IRQHandler
         SECTION .text:CODE:REORDER:NOROOT(1)
 SPI3_IRQHandler  
         B SPI3_IRQHandler
-
-        PUBWEAK UART4_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)
-UART4_IRQHandler  
-        B UART4_IRQHandler
-
-        PUBWEAK UART5_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)
-UART5_IRQHandler  
-        B UART5_IRQHandler
 
         PUBWEAK TIM6_DAC_IRQHandler
         SECTION .text:CODE:REORDER:NOROOT(1)   
 TIM6_DAC_IRQHandler  
         B TIM6_DAC_IRQHandler
 
-        PUBWEAK TIM7_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)   
-TIM7_IRQHandler  
-        B TIM7_IRQHandler
+        PUBWEAK COMP2_IRQHandler
+        SECTION .text:CODE:REORDER:NOROOT(1)  
+COMP2_IRQHandler  
+        B COMP2_IRQHandler
 
-        PUBWEAK DMA2_Channel1_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)    
-DMA2_Channel1_IRQHandler  
-        B DMA2_Channel1_IRQHandler
+        PUBWEAK COMP4_6_IRQHandler
+        SECTION .text:CODE:REORDER:NOROOT(1)  
+COMP4_6_IRQHandler  
+        B COMP4_6_IRQHandler
 
-        PUBWEAK DMA2_Channel2_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)    
-DMA2_Channel2_IRQHandler  
-        B DMA2_Channel2_IRQHandler
-
-        PUBWEAK DMA2_Channel3_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)    
-DMA2_Channel3_IRQHandler  
-        B DMA2_Channel3_IRQHandler
-
-        PUBWEAK DMA2_Channel4_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)    
-DMA2_Channel4_IRQHandler  
-        B DMA2_Channel4_IRQHandler
-
-        PUBWEAK DMA2_Channel5_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)    
-DMA2_Channel5_IRQHandler  
-        B DMA2_Channel5_IRQHandler
-
-
-        PUBWEAK ADC4_IRQHandler
+        PUBWEAK I2C3_EV_IRQHandler
         SECTION .text:CODE:REORDER:NOROOT(1) 
-ADC4_IRQHandler  
-        B ADC4_IRQHandler
+I2C3_EV_IRQHandler  
+        B I2C3_EV_IRQHandler
 
-        PUBWEAK COMP1_2_3_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)  
-COMP1_2_3_IRQHandler  
-        B COMP1_2_3_IRQHandler
-
-        PUBWEAK COMP4_5_6_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)  
-COMP4_5_6_IRQHandler  
-        B COMP4_5_6_IRQHandler
-
-        PUBWEAK COMP7_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)  
-COMP7_IRQHandler  
-        B COMP7_IRQHandler
+        PUBWEAK I2C3_ER_IRQHandler
+        SECTION .text:CODE:REORDER:NOROOT(1) 
+I2C3_ER_IRQHandler  
+        B I2C3_ER_IRQHandler
 
         PUBWEAK USB_HP_IRQHandler
         SECTION .text:CODE:REORDER:NOROOT(1)

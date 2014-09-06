@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    stm32f30x_i2c_cpal.c
   * @author  MCD Application Team
-  * @version V1.0.1
-  * @date    23-October-2012
+  * @version V1.1.0
+  * @date    04-April-2014
   * @brief   This file provides all the CPAL firmware functions for I2C peripheral.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2014 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
   *
   *        http://www.st.com/software_license_agreement_liberty_v2
   *
-  * Unless required by applicable law or agreed to in writing, software 
-  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   * See the License for the specific language governing permissions and
   * limitations under the License.
@@ -45,7 +45,7 @@
                                                  (pDevInitStruct->wCPAL_Timeout == CPAL_I2C_TIMEOUT_DEFAULT))
 
 #define __CPAL_I2C_TIMEOUT(cmd, timeout)         pDevInitStruct->wCPAL_Timeout = CPAL_I2C_TIMEOUT_MIN + (timeout);\
-                                                 while (((cmd) == 0) && (!__CPAL_I2C_TIMEOUT_DETECT))\
+                                                 while (((cmd) == 0) && (!__CPAL_I2C_TIMEOUT_DETECT));\
                                                  if (__CPAL_I2C_TIMEOUT_DETECT)\
                                                  {\
                                                    return CPAL_I2C_Timeout (pDevInitStruct); \
@@ -80,13 +80,13 @@ extern const uint32_t CPAL_I2C_DMA_RX_TE_FLAG[];
 I2C_InitTypeDef I2C_InitStructure;
 
 __IO uint32_t Num_Data = 0;
-uint32_t CR2_tmp = 0;  
+uint32_t CR2_tmp = 0;
 
 /* Private function prototypes -----------------------------------------------*/
 
 /*========= Local Master events handlers =========*/
 
-#ifdef CPAL_I2C_MASTER_MODE 
+#ifdef CPAL_I2C_MASTER_MODE
   static uint32_t I2C_MASTER_TCR_Handle(CPAL_InitTypeDef* pDevInitStruct);    /* Handle Master TCR Interrupt event */
   static uint32_t I2C_MASTER_TC_Handle(CPAL_InitTypeDef* pDevInitStruct);     /* Handle Master TC Interrupt event */
   static uint32_t I2C_MASTER_STOP_Handle(CPAL_InitTypeDef* pDevInitStruct);   /* Handle Master STOP Interrupt event */
@@ -96,9 +96,9 @@ uint32_t CR2_tmp = 0;
   static uint32_t I2C_MASTER_RXNE_Handle(CPAL_InitTypeDef* pDevInitStruct);   /* Handle Master RXNE Interrupt event */
  #endif /* CPAL_I2C_IT_PROGMODEL */
 #endif /* CPAL_I2C_MASTER_MODE */
- 
-/*========= Local Slave events handlers =========*/ 
- 
+
+/*========= Local Slave events handlers =========*/
+
 #ifdef CPAL_I2C_SLAVE_MODE
   static uint32_t I2C_SLAVE_ADDR_Handle(CPAL_InitTypeDef* pDevInitStruct);   /* Handle Slave ADDR Interrupt event */
   static uint32_t I2C_SLAVE_STOP_Handle(CPAL_InitTypeDef* pDevInitStruct);   /* Handle Slave STOPF Interrupt event */
@@ -110,7 +110,7 @@ uint32_t CR2_tmp = 0;
 #endif /* CPAL_I2C_SLAVE_MODE */
 
 
-#ifdef CPAL_I2C_DMA_PROGMODEL  
+#ifdef CPAL_I2C_DMA_PROGMODEL
 /*========= Local DMA Manager =========*/
 static uint32_t I2C_Enable_DMA (CPAL_InitTypeDef* pDevInitStruct, CPAL_DirectionTypeDef Direction);
 #endif /* CPAL_I2C_DMA_PROGMODEL */
@@ -140,14 +140,14 @@ uint32_t CPAL_I2C_Init(CPAL_InitTypeDef* pDevInitStruct)
       || (pDevInitStruct->CPAL_State == CPAL_STATE_ERROR)
       || (pDevInitStruct->CPAL_State == CPAL_STATE_DISABLED))
   {
-    /* 
+    /*
     - If CPAL_State is CPAL_STATE_ERROR (an Error occurred in transaction):
       Perform the initialization routines (device will be deinitialized during initialization).
     - If CPAL_State is CPAL_STATE_READY:
-      Perform the initialization routines 
+      Perform the initialization routines
     - If CPAL_State is CPAL_STATE_DISABLED:
       Perform the Initialization routines                                   */
-    
+
 #ifndef CPAL_I2C_DMA_PROGMODEL
     if (pDevInitStruct->CPAL_ProgModel == CPAL_PROGMODEL_DMA)
     {
@@ -168,12 +168,12 @@ uint32_t CPAL_I2C_Init(CPAL_InitTypeDef* pDevInitStruct)
       /* Exit Init function */
       return CPAL_FAIL;
     }
-#endif /* CPAL_I2C_IT_PROGMODEL */ 
-   
+#endif /* CPAL_I2C_IT_PROGMODEL */
+
     /* Disable I2Cx device */
     __CPAL_I2C_HAL_DISABLE_DEV(pDevInitStruct->CPAL_Dev);
 
-    CPAL_LOG("\n\rLOG : I2C Device Disabled"); 
+    CPAL_LOG("\n\rLOG : I2C Device Disabled");
 
     /* Deinitialize I2Cx GPIO */
     CPAL_I2C_HAL_GPIODeInit(pDevInitStruct->CPAL_Dev);
@@ -185,16 +185,16 @@ uint32_t CPAL_I2C_Init(CPAL_InitTypeDef* pDevInitStruct)
 
     CPAL_LOG("\n\rLOG : I2C Device Clock Deinit");
 
-#ifdef CPAL_I2C_DMA_PROGMODEL    
+#ifdef CPAL_I2C_DMA_PROGMODEL
     /* Deinitialize DMA Channels */
     if (pDevInitStruct->CPAL_ProgModel == CPAL_PROGMODEL_DMA)
     {
       CPAL_I2C_HAL_DMADeInit(pDevInitStruct->CPAL_Dev, pDevInitStruct->CPAL_Direction);
 
       CPAL_LOG("\n\rLOG : I2C Device DMA Deinit");
-    } 
+    }
 #endif /* CPAL_I2C_DMA_PROGMODEL */
-        
+
     /*--------------------------------------------------------------------------
     GPIO pins configuration
     ---------------------------------------------------------------------------*/
@@ -202,7 +202,7 @@ uint32_t CPAL_I2C_Init(CPAL_InitTypeDef* pDevInitStruct)
     CPAL_I2C_HAL_GPIOInit(pDevInitStruct->CPAL_Dev);
 
     CPAL_LOG("\n\rLOG : I2C Device IOs Init");
-    
+
     /*--------------------------------------------------------------------------
         Peripheral Clock Initialization
     ---------------------------------------------------------------------------*/
@@ -210,7 +210,7 @@ uint32_t CPAL_I2C_Init(CPAL_InitTypeDef* pDevInitStruct)
     CPAL_I2C_HAL_CLKInit(pDevInitStruct->CPAL_Dev);
 
     CPAL_LOG("\n\rLOG : I2C Device Clock Init");
-    
+
     /*--------------------------------------------------------------------------
     Peripheral Initialization
     ---------------------------------------------------------------------------*/
@@ -228,7 +228,7 @@ uint32_t CPAL_I2C_Init(CPAL_InitTypeDef* pDevInitStruct)
 
       CPAL_LOG("\n\rLOG : I2C Device GENCALL Mode Enabled");
     }
-    
+
     /* If OA2 Address mode option bit selected */
     if ((pDevInitStruct->wCPAL_Options & CPAL_OPT_I2C_DUALADDR) != 0)
     {
@@ -243,7 +243,7 @@ uint32_t CPAL_I2C_Init(CPAL_InitTypeDef* pDevInitStruct)
 
       CPAL_LOG("\n\rLOG : I2C Device OA2 ADDR Mode Enabled");
     }
-    
+
     /* If WakeUp from STOP option bit selected */
     if ((pDevInitStruct->wCPAL_Options & CPAL_OPT_I2C_WAKEUP_STOP) != 0)
     {
@@ -257,7 +257,7 @@ uint32_t CPAL_I2C_Init(CPAL_InitTypeDef* pDevInitStruct)
       /* Disable WakeUp from STOP mode */
       __CPAL_I2C_HAL_DISABLE_WAKEUP(pDevInitStruct->CPAL_Dev);
     }
-    
+
     /* If NACK Slave Own Address option bit selected */
     if ((pDevInitStruct->wCPAL_Options & CPAL_OPT_I2C_NACK_ADD) != 0)
     {
@@ -270,7 +270,7 @@ uint32_t CPAL_I2C_Init(CPAL_InitTypeDef* pDevInitStruct)
 #ifdef CPAL_I2C_DMA_PROGMODEL
     /*--------------------------------------------------------------------------
     DMA Initialization :
-    ---------------------------------------------------------------------------*/   
+    ---------------------------------------------------------------------------*/
     /* If DMA Programming model is selected*/
     if (pDevInitStruct->CPAL_ProgModel == CPAL_PROGMODEL_DMA)
     {
@@ -310,12 +310,12 @@ uint32_t CPAL_I2C_Init(CPAL_InitTypeDef* pDevInitStruct)
 
 
 /**
-  * @brief  Deinitialize the peripheral and all related clocks, GPIOs, DMA and NVIC 
+  * @brief  Deinitialize the peripheral and all related clocks, GPIOs, DMA and NVIC
   *         to their reset values.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
   * @retval CPAL_PASS or CPAL_FAIL
-  * @note   The Peripheral clock is disabled but the GPIO Ports clocks remains 
-  *         enabled after this deinitialization. 
+  * @note   The Peripheral clock is disabled but the GPIO Ports clocks remains
+  *         enabled after this deinitialization.
   */
 uint32_t CPAL_I2C_DeInit(CPAL_InitTypeDef* pDevInitStruct)
 {
@@ -326,7 +326,7 @@ uint32_t CPAL_I2C_DeInit(CPAL_InitTypeDef* pDevInitStruct)
       || (pDevInitStruct->CPAL_State == CPAL_STATE_ERROR)
       || (pDevInitStruct->CPAL_State == CPAL_STATE_DISABLED))
   {
-    /* 
+    /*
     - If CPAL_State is CPAL_STATE_ERROR (an Error occurred in transaction):
       Perform the deinitialization routines
     - If CPAL_State is CPAL_STATE_READY:
@@ -427,7 +427,7 @@ uint32_t CPAL_I2C_StructInit(CPAL_InitTypeDef* pDevInitStruct)
   pDevInitStruct->CPAL_Mode          = CPAL_MODE_MASTER;                     /* Mode Master selected */
   pDevInitStruct->CPAL_ProgModel     = CPAL_PROGMODEL_DMA;                   /* DMA Programming Model selected */
   pDevInitStruct->pCPAL_TransferTx   = pNULL;                                /* Point pCPAL_TransferTx to a Null pointer */
-  pDevInitStruct->pCPAL_TransferRx   = pNULL;                                /* Point pCPAL_TransferRx to a Null pointer */ 
+  pDevInitStruct->pCPAL_TransferRx   = pNULL;                                /* Point pCPAL_TransferRx to a Null pointer */
   pDevInitStruct->CPAL_State         = CPAL_STATE_DISABLED;                  /* Device Disabled */
   pDevInitStruct->wCPAL_DevError     = CPAL_I2C_ERR_NONE;                    /* No Device Error */
   pDevInitStruct->wCPAL_Options      = ((uint32_t)0x00000000);               /* No Options selected */
@@ -442,7 +442,7 @@ uint32_t CPAL_I2C_StructInit(CPAL_InitTypeDef* pDevInitStruct)
 #if defined (CPAL_I2C_MASTER_MODE) || ! defined (CPAL_I2C_LISTEN_MODE)
 
 /**
-  * @brief  Allows to send a data or a buffer of data through the peripheral to 
+  * @brief  Allows to send a data or a buffer of data through the peripheral to
   *         a selected device in a selected location address.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
   * @retval CPAL_PASS or CPAL_FAIL.
@@ -451,7 +451,7 @@ uint32_t CPAL_I2C_Write(CPAL_InitTypeDef* pDevInitStruct)
 {
   CR2_tmp = 0;
 
-  /* Check I2C State: 
+  /* Check I2C State:
   - If busy       --> exit Write operation
   - If disabled   --> exit Write operation
   - If error      --> exit Write operation
@@ -460,15 +460,15 @@ uint32_t CPAL_I2C_Write(CPAL_InitTypeDef* pDevInitStruct)
                       *- If CPAL_OPT_I2C_NOSTOP_MODE is not selected :
                          - Check if device is busy.
                       *- Update CPAL_State to CPAL_STATE_READY_TX
-                      *- If DMA Prog Model : 
+                      *- If DMA Prog Model :
                          - Configure and enable DMA
-                      *- If Master mode : 
+                      *- If Master mode :
                          - If 10Bit Mode : Enable ADD10
                          - Configure Slave address
                       *- If Memory Address mode (master)
                          - Send target and memory address
                       *- Update CPAL_State to CPAL_STATE_BUSY_TX
-                      *- If Master mode : 
+                      *- If Master mode :
                          - Configure AUTOEND, RELOAD and NBYTES
                          - If Interrupt Prog Model :
                              - Generate start and enable interrupts
@@ -512,11 +512,11 @@ uint32_t CPAL_I2C_Write(CPAL_InitTypeDef* pDevInitStruct)
   {
     /* Update CPAL_State to CPAL_STATE_BUSY */
     pDevInitStruct->CPAL_State = CPAL_STATE_BUSY;
-    
+
     /* IF CPAL_OPT_I2C_NOSTOP_MODE is not selected */
     if ((pDevInitStruct->wCPAL_Options & CPAL_OPT_I2C_NOSTOP_MODE) == 0)
     {
-      /* Wait until BUSY flag is reset */ 
+      /* Wait until BUSY flag is reset */
       __CPAL_I2C_TIMEOUT(!(__CPAL_I2C_HAL_GET_BUSY(pDevInitStruct->CPAL_Dev)), CPAL_I2C_TIMEOUT_BUSY);
     }
 
@@ -549,7 +549,7 @@ uint32_t CPAL_I2C_Write(CPAL_InitTypeDef* pDevInitStruct)
       /* Configure slave address */
       CR2_tmp |= (uint32_t)((pDevInitStruct->pCPAL_TransferTx->wAddr1) & 0x000003FF);
     }
-    
+
   #ifdef CPAL_I2C_MEM_ADDR
     /* If CPAL_OPT_NO_MEM_ADDR is not selected and master mode selected */
     if (((pDevInitStruct->wCPAL_Options & CPAL_OPT_NO_MEM_ADDR) == 0)
@@ -559,7 +559,7 @@ uint32_t CPAL_I2C_Write(CPAL_InitTypeDef* pDevInitStruct)
 
       /* Enable reload */
       CR2_tmp |= I2C_CR2_RELOAD;
-      
+
       /* If 8 Bit register mode */
       if ((pDevInitStruct->wCPAL_Options & CPAL_OPT_16BIT_REG) == 0)
       {
@@ -570,9 +570,9 @@ uint32_t CPAL_I2C_Write(CPAL_InitTypeDef* pDevInitStruct)
         __CPAL_I2C_HAL_CR2_UPDATE(pDevInitStruct->CPAL_Dev, CR2_tmp);
 
         /* Generate start */
-        __CPAL_I2C_HAL_START(pDevInitStruct->CPAL_Dev);   
+        __CPAL_I2C_HAL_START(pDevInitStruct->CPAL_Dev);
 
-        /* Wait until TXIS flag is set */ 
+        /* Wait until TXIS flag is set */
         __CPAL_I2C_TIMEOUT(__CPAL_I2C_HAL_GET_TXIS(pDevInitStruct->CPAL_Dev), CPAL_I2C_TIMEOUT_TXIS);
 
         /* Send register address */
@@ -589,9 +589,9 @@ uint32_t CPAL_I2C_Write(CPAL_InitTypeDef* pDevInitStruct)
         __CPAL_I2C_HAL_CR2_UPDATE(pDevInitStruct->CPAL_Dev, CR2_tmp);
 
         /* Generate start */
-        __CPAL_I2C_HAL_START(pDevInitStruct->CPAL_Dev); 
+        __CPAL_I2C_HAL_START(pDevInitStruct->CPAL_Dev);
 
-        /* Wait until TXIS flag is set */ 
+        /* Wait until TXIS flag is set */
         __CPAL_I2C_TIMEOUT(__CPAL_I2C_HAL_GET_TXIS(pDevInitStruct->CPAL_Dev), CPAL_I2C_TIMEOUT_TXIS);
 
         /* Send register address (MSB) */
@@ -624,7 +624,7 @@ uint32_t CPAL_I2C_Write(CPAL_InitTypeDef* pDevInitStruct)
     {
       CPAL_LOG("\n\rLOG : I2C Device Master");
 
-      /* If automatic end mode is selected */   
+      /* If automatic end mode is selected */
       if ((pDevInitStruct->wCPAL_Options & CPAL_OPT_I2C_AUTOMATIC_END) != 0)
       {
         /* Enable automatic end mode */
@@ -652,12 +652,12 @@ uint32_t CPAL_I2C_Write(CPAL_InitTypeDef* pDevInitStruct)
         /* Enable reload */
         CR2_tmp |= I2C_CR2_RELOAD;
       }
-      
+
       /* If CPAL_OPT_NO_MEM_ADDR is selected */
       if ((pDevInitStruct->wCPAL_Options & CPAL_OPT_NO_MEM_ADDR) != 0)
       {
         /* Generate start */
-        CR2_tmp |= I2C_CR2_START;                
+        CR2_tmp |= I2C_CR2_START;
       }
 
       /* Update CR2 Register */
@@ -707,7 +707,7 @@ uint32_t CPAL_I2C_Write(CPAL_InitTypeDef* pDevInitStruct)
       }
       /* If DMA programming model */
       else
-      { 
+      {
         CPAL_LOG("\n\rLOG : I2C Device DMA TX Enabled");
 
         /* Enable TX DMA request */
@@ -728,24 +728,24 @@ uint32_t CPAL_I2C_Write(CPAL_InitTypeDef* pDevInitStruct)
   * @brief  Allows to receive a data or a buffer of data through the peripheral
   *         from a selected device in a selected location address.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
-  * @retval CPAL_PASS or CPAL_FAIL. 
+  * @retval CPAL_PASS or CPAL_FAIL.
   */
 uint32_t CPAL_I2C_Read(CPAL_InitTypeDef* pDevInitStruct)
 {
   CR2_tmp = 0;
 
-  /* Check I2C State: 
+  /* Check I2C State:
   - If busy       --> exit Read operation
   - If disabled   --> exit Read operation
   - If error      --> exit Read operation
-  - If ready      --> 
+  - If ready      -->
                       *- Update CPAL_State to CPAL_STATE_BUSY
                       *- If CPAL_OPT_I2C_NOSTOP_MODE is not selected :
                          - Check if device is busy
                       *- Update CPAL_State to CPAL_STATE_READY_RX
                       *- If DMA Prog Model :
                          - Configure and enable DMA
-                      *- If Master mode : 
+                      *- If Master mode :
                          - If 10Bit Mode : Enable ADD10
                          - Configure Slave address
                       *- If Memory Address mode (master)
@@ -766,7 +766,7 @@ uint32_t CPAL_I2C_Read(CPAL_InitTypeDef* pDevInitStruct)
                              - Enable interrupts                             */
 
   CPAL_LOG("\n\r\n\rLOG <CPAL_I2C_Read> : I2C Device Perform Read OP");
-  
+
   /* If Device is Busy (a transaction is still on going) Exit Read function */
   if (((pDevInitStruct->CPAL_State & CPAL_STATE_BUSY) != 0)
       || (pDevInitStruct->CPAL_State == CPAL_STATE_READY_TX)
@@ -799,7 +799,7 @@ uint32_t CPAL_I2C_Read(CPAL_InitTypeDef* pDevInitStruct)
     /* If CPAL_OPT_I2C_NOSTOP_MODE is not selected */
     if ((pDevInitStruct->wCPAL_Options & CPAL_OPT_I2C_NOSTOP_MODE) == 0)
     {
-      /* Wait until BUSY flag is reset */ 
+      /* Wait until BUSY flag is reset */
       __CPAL_I2C_TIMEOUT(!(__CPAL_I2C_HAL_GET_BUSY(pDevInitStruct->CPAL_Dev)), CPAL_I2C_TIMEOUT_BUSY);
     }
 
@@ -850,13 +850,13 @@ uint32_t CPAL_I2C_Read(CPAL_InitTypeDef* pDevInitStruct)
         __CPAL_I2C_HAL_CR2_UPDATE(pDevInitStruct->CPAL_Dev, CR2_tmp);
 
         /* Generate start */
-        __CPAL_I2C_HAL_START(pDevInitStruct->CPAL_Dev); 
+        __CPAL_I2C_HAL_START(pDevInitStruct->CPAL_Dev);
 
         /* Wait until TXIS flag is set */
         __CPAL_I2C_TIMEOUT(__CPAL_I2C_HAL_GET_TXIS(pDevInitStruct->CPAL_Dev), CPAL_I2C_TIMEOUT_TXIS);
 
         /* Send register address */
-        __CPAL_I2C_HAL_SEND(pDevInitStruct->CPAL_Dev, (uint8_t)(pDevInitStruct->pCPAL_TransferRx->wAddr2));        
+        __CPAL_I2C_HAL_SEND(pDevInitStruct->CPAL_Dev, (uint8_t)(pDevInitStruct->pCPAL_TransferRx->wAddr2));
       }
     #ifdef CPAL_16BIT_REG_OPTION
       /* If 16 Bit register mode */
@@ -869,9 +869,9 @@ uint32_t CPAL_I2C_Read(CPAL_InitTypeDef* pDevInitStruct)
         __CPAL_I2C_HAL_CR2_UPDATE(pDevInitStruct->CPAL_Dev, CR2_tmp);
 
         /* Generate start */
-        __CPAL_I2C_HAL_START(pDevInitStruct->CPAL_Dev); 
+        __CPAL_I2C_HAL_START(pDevInitStruct->CPAL_Dev);
 
-        /* Wait until TXIS flag is set */ 
+        /* Wait until TXIS flag is set */
         __CPAL_I2C_TIMEOUT(__CPAL_I2C_HAL_GET_TXIS(pDevInitStruct->CPAL_Dev), CPAL_I2C_TIMEOUT_TXIS);
 
         /* Send register address (MSB) */
@@ -883,18 +883,17 @@ uint32_t CPAL_I2C_Read(CPAL_InitTypeDef* pDevInitStruct)
         /* Send register address (LSB) */
         __CPAL_I2C_HAL_SEND(pDevInitStruct->CPAL_Dev, (uint8_t)((pDevInitStruct->pCPAL_TransferRx->wAddr2)& 0x00FF));
       }
+    #endif /* CPAL_16BIT_REG_OPTION */
 
-      /* Wait until TC flag is set */ 
+      /* Wait until TC flag is set */
       __CPAL_I2C_TIMEOUT(__CPAL_I2C_HAL_GET_TC(pDevInitStruct->CPAL_Dev), CPAL_I2C_TIMEOUT_TC);
-      
+
       /* Set Nbytes to zero */
       CR2_tmp &= ~I2C_CR2_NBYTES;
-
-    #endif /* CPAL_16BIT_REG_OPTION */
     }
   #endif /* CPAL_I2C_MEM_ADDR */
 #endif /* CPAL_I2C_MASTER_MODE */
-    
+
     /* Update CPAL_State to CPAL_STATE_BUSY_RX */
     pDevInitStruct->CPAL_State = CPAL_STATE_BUSY_RX;
     CPAL_LOG("\n\rLOG : I2C Device Busy RX");
@@ -920,7 +919,7 @@ uint32_t CPAL_I2C_Read(CPAL_InitTypeDef* pDevInitStruct)
         }
       }
   #endif /* CPAL_I2C_10BIT_ADDR_MODE */
-      
+
       /* If automatic end mode is selected */
       if ((pDevInitStruct->wCPAL_Options & CPAL_OPT_I2C_AUTOMATIC_END) != 0)
       {
@@ -950,9 +949,9 @@ uint32_t CPAL_I2C_Read(CPAL_InitTypeDef* pDevInitStruct)
         CR2_tmp |= I2C_CR2_RELOAD;
       }
 
-      /* Generate start */ 
-      CR2_tmp |= I2C_CR2_START; 
-      
+      /* Generate start */
+      CR2_tmp |= I2C_CR2_START;
+
       /* If interrupt programming model */
       if (pDevInitStruct->CPAL_ProgModel == CPAL_PROGMODEL_INTERRUPT)
       {
@@ -976,7 +975,7 @@ uint32_t CPAL_I2C_Read(CPAL_InitTypeDef* pDevInitStruct)
         __CPAL_I2C_HAL_CR2_UPDATE(pDevInitStruct->CPAL_Dev, CR2_tmp);
 
         /* Enable master interrupt */
-        __CPAL_I2C_HAL_ENABLE_MASTER_IT(pDevInitStruct->CPAL_Dev);          
+        __CPAL_I2C_HAL_ENABLE_MASTER_IT(pDevInitStruct->CPAL_Dev);
       }
     }
     /* If slave mode selected */
@@ -1004,7 +1003,7 @@ uint32_t CPAL_I2C_Read(CPAL_InitTypeDef* pDevInitStruct)
       /* If DMA programming model */
       else
       {
-        CPAL_LOG("\n\rLOG : I2C Device DMA RX Enabled"); 
+        CPAL_LOG("\n\rLOG : I2C Device DMA RX Enabled");
 
         /* Enable RX DMA request */
         __CPAL_I2C_HAL_ENABLE_RXDMAREQ(pDevInitStruct->CPAL_Dev);
@@ -1021,13 +1020,13 @@ uint32_t CPAL_I2C_Read(CPAL_InitTypeDef* pDevInitStruct)
 
 #if defined (CPAL_I2C_LISTEN_MODE) && defined (CPAL_I2C_SLAVE_MODE)
 /**
-  * @brief  Allows slave device to start a communication without knowing in advance 
+  * @brief  Allows slave device to start a communication without knowing in advance
   *         the nature of the operation (read or write). Slave waits until it receive
-  *         its own address.CPAL_I2C_SLAVE_READ_UserCallback is called for a read request 
+  *         its own address.CPAL_I2C_SLAVE_READ_UserCallback is called for a read request
   *         and CPAL_I2C_SLAVE_WRITE_UserCallback for a write request in I2C_SLAVE_ADDR_Handle.
-  *         User must implement inorder to configure DMA, interrupts and transfer parameters.  
+  *         User must implement inorder to configure DMA, interrupts and transfer parameters.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
-  * @retval CPAL_PASS or CPAL_FAIL. 
+  * @retval CPAL_PASS or CPAL_FAIL.
   */
 uint32_t CPAL_I2C_Listen(CPAL_InitTypeDef* pDevInitStruct)
 {
@@ -1035,7 +1034,7 @@ uint32_t CPAL_I2C_Listen(CPAL_InitTypeDef* pDevInitStruct)
   - If busy       --> exit operation
   - If disabled   --> exit operation
   - If error      --> exit operation
-  - If ready      --> 
+  - If ready      -->
           - Enable Event Interrupt                                               */
 
   CPAL_LOG("\n\r\n\rLOG <CPAL_I2C_Listen> : I2C Device in listen mode");
@@ -1045,21 +1044,21 @@ uint32_t CPAL_I2C_Listen(CPAL_InitTypeDef* pDevInitStruct)
       || (pDevInitStruct->CPAL_State == CPAL_STATE_READY_TX)
         || (pDevInitStruct->CPAL_State == CPAL_STATE_READY_RX))
   {
-    CPAL_LOG("\n\rERROR : I2C Device Busy"); 
+    CPAL_LOG("\n\rERROR : I2C Device Busy");
 
     return CPAL_FAIL;
-  }  
-  /* If CPAL_State is CPAL_STATE_DISABLED (device is not initialized) Exit function */  
-  else if (pDevInitStruct->CPAL_State == CPAL_STATE_DISABLED)  
+  }
+  /* If CPAL_State is CPAL_STATE_DISABLED (device is not initialized) Exit function */
+  else if (pDevInitStruct->CPAL_State == CPAL_STATE_DISABLED)
   {
-    CPAL_LOG("\n\rERROR : I2C Device Not Initialized"); 
+    CPAL_LOG("\n\rERROR : I2C Device Not Initialized");
 
     return CPAL_FAIL;
   }
   /* If CPAL_State is CPAL_STATE_ERROR (Error occurred ) */
   else if (pDevInitStruct->CPAL_State == CPAL_STATE_ERROR)
   {
-    CPAL_LOG("\n\rERROR : I2C Device Error"); 
+    CPAL_LOG("\n\rERROR : I2C Device Error");
 
     return CPAL_FAIL;
   }
@@ -1075,17 +1074,17 @@ uint32_t CPAL_I2C_Listen(CPAL_InitTypeDef* pDevInitStruct)
     }
 
     /* Set device to slave mode */
-    pDevInitStruct->CPAL_Mode = CPAL_MODE_SLAVE; 
+    pDevInitStruct->CPAL_Mode = CPAL_MODE_SLAVE;
 
     /* Update CPAL_State to CPAL_STATE_BUSY */
     pDevInitStruct->CPAL_State = CPAL_STATE_BUSY;
 
-    CPAL_LOG("\n\rLOG : I2C Device EVT IT Enabled");   
+    CPAL_LOG("\n\rLOG : I2C Device EVT IT Enabled");
 
     /* Enable Slave Interrupts*/
-    __CPAL_I2C_HAL_ENABLE_SLAVE_IT(pDevInitStruct->CPAL_Dev);    
+    __CPAL_I2C_HAL_ENABLE_SLAVE_IT(pDevInitStruct->CPAL_Dev);
   }
-  
+
   return CPAL_PASS;
 }
 #endif /* CPAL_I2C_LISTEN_MODE && CPAL_I2C_SLAVE_MODE */
@@ -1097,81 +1096,72 @@ uint32_t CPAL_I2C_Listen(CPAL_InitTypeDef* pDevInitStruct)
   * @retval CPAL_PASS or CPAL_FAIL.
   */
 uint32_t CPAL_I2C_IsDeviceReady(CPAL_InitTypeDef* pDevInitStruct)
-{ 
-  __IO uint32_t Timeout = 0xFFF;
-  
+{
   CR2_tmp = 0;
-  
+
   CPAL_LOG("\n\r\n\rLOG <CPAL_I2C_IsDeviceReady> : Wait until I2C Device is Ready");
-  
+
   /* Set CPAL_State to CPAL_STATE_BUSY */
   pDevInitStruct->CPAL_State = CPAL_STATE_BUSY;
-  
+
   /* Disable I2Cx device */
   __CPAL_I2C_HAL_DISABLE_DEV(pDevInitStruct->CPAL_Dev);
-  
+
   /* Enable I2Cx device */
   __CPAL_I2C_HAL_ENABLE_DEV(pDevInitStruct->CPAL_Dev);
-  
+
   /* Disable interrupts */
   __CPAL_I2C_HAL_DISABLE_ALLIT(pDevInitStruct->CPAL_Dev);
-  
+
   /* Configure slave address */
-  CR2_tmp |= (uint32_t)((pDevInitStruct->pCPAL_TransferTx->wAddr1) & 0x000003FF);
-  
+  CR2_tmp |= (uint32_t)((pDevInitStruct->pCPAL_TransferTx->wAddr1) & 0x000003FF) | I2C_CR2_AUTOEND;
+
   /* Update CR2 Register */
   __CPAL_I2C_HAL_CR2_UPDATE(pDevInitStruct->CPAL_Dev, CR2_tmp);
-  
+
   /* Generate Start */
   __CPAL_I2C_HAL_START(pDevInitStruct->CPAL_Dev);
-  
-  /* wait until timeout elapsed */
-  while (Timeout-- != 0);
-  
-  /* If Timeout occurred */
-  if (__CPAL_I2C_HAL_GET_NACK(pDevInitStruct->CPAL_Dev) != 0)
+
+  /* Set 35ms timeout */
+  pDevInitStruct->wCPAL_Timeout = CPAL_I2C_TIMEOUT_MIN + 35;
+
+  /* No need to Check TC flag, with AUTOEND mode the stop is automatically generated */
+  /* Wait until STOPF flag is set or a NACK flag is set*/
+  while((__CPAL_I2C_HAL_GET_STOP(pDevInitStruct->CPAL_Dev) == RESET) && (__CPAL_I2C_HAL_GET_NACK(pDevInitStruct->CPAL_Dev) == RESET));
+
+  /* Reinitialize Timeout Value to default */
+  pDevInitStruct->wCPAL_Timeout = CPAL_I2C_TIMEOUT_DEFAULT;
+
+  /* Check if the NACKF flag has not been set */
+  if (__CPAL_I2C_HAL_GET_NACK(pDevInitStruct->CPAL_Dev) != RESET)
   {
     /* Clear NACK flag */
     __CPAL_I2C_HAL_CLEAR_NACK(pDevInitStruct->CPAL_Dev);
-    
+
     /* Clear Stop flag */
     __CPAL_I2C_HAL_CLEAR_STOP(pDevInitStruct->CPAL_Dev);
-    
-    return CPAL_FAIL;
-  }
-  /* If TXIS flag is set */
-  else
-  {
-    /* Generate stop */
-    __CPAL_I2C_HAL_STOP(pDevInitStruct->CPAL_Dev);
-    
-    /* wait until STOP flag is set */
-    while (__CPAL_I2C_HAL_GET_STOP(pDevInitStruct->CPAL_Dev) == 0);
-    
-    /* Clear Stop flag */
-    __CPAL_I2C_HAL_CLEAR_STOP(pDevInitStruct->CPAL_Dev);
-    
-    /* wait until BUSY flag is reset */
-    while(__CPAL_I2C_HAL_GET_BUSY(pDevInitStruct->CPAL_Dev));
-    
-    /* Disable I2Cx device */
-    __CPAL_I2C_HAL_DISABLE_DEV(pDevInitStruct->CPAL_Dev);
-    
-    CPAL_LOG("\n\rLOG : I2C Device Disabled");
-    
-    /* Enable I2Cx device */
-    __CPAL_I2C_HAL_ENABLE_DEV(pDevInitStruct->CPAL_Dev);
-    
-    CPAL_LOG("\n\rLOG : I2C Device Enabled");
-    
+
     /* Enable error interrupt */
     __CPAL_I2C_HAL_ENABLE_ERRIT(pDevInitStruct->CPAL_Dev);
-    
+
     /* Set CPAL_State to CPAL_STATE_READY */
     pDevInitStruct->CPAL_State = CPAL_STATE_READY;
-    
+
+    return CPAL_FAIL;
+  }
+  else
+  {
+    /* Clear Stop flag */
+    __CPAL_I2C_HAL_CLEAR_STOP(pDevInitStruct->CPAL_Dev);
+
+    /* Enable error interrupt */
+    __CPAL_I2C_HAL_ENABLE_ERRIT(pDevInitStruct->CPAL_Dev);
+
+    /* Set CPAL_State to CPAL_STATE_READY */
+    pDevInitStruct->CPAL_State = CPAL_STATE_READY;
+
     CPAL_LOG("\n\rLOG : I2C Target device Ready");
-    
+
     return CPAL_PASS;
   }
 }
@@ -1183,15 +1173,15 @@ uint32_t CPAL_I2C_IsDeviceReady(CPAL_InitTypeDef* pDevInitStruct)
   * @brief  This function handles I2C interrupt request for preparing communication
   *         and for transfer phase in case of using Interrupt Programming Model.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
-  * @retval CPAL_PASS. 
+  * @retval CPAL_PASS.
   */
 uint32_t CPAL_I2C_EV_IRQHandler( CPAL_InitTypeDef* pDevInitStruct)
 {
   __IO uint32_t I2CFlagStatus = 0x00000000;
-  
+
   /* Read I2C status registers (ISR) */
   I2CFlagStatus = __CPAL_I2C_HAL_GET_EVENT(pDevInitStruct->CPAL_Dev);
- 
+
 #ifdef CPAL_I2C_MASTER_MODE
   /*----------------------------------------------------------------------------------------------*/
   /*---------------------------------- If Master Mode selected ----------------------------------*/
@@ -1254,7 +1244,7 @@ uint32_t CPAL_I2C_EV_IRQHandler( CPAL_InitTypeDef* pDevInitStruct)
     {
       I2C_SLAVE_ADDR_Handle(pDevInitStruct);
     }
-    
+
  #ifdef CPAL_I2C_IT_PROGMODEL
     /*----------------------------------------*/
     /*------------- If TXIS event ------------*/
@@ -1270,14 +1260,14 @@ uint32_t CPAL_I2C_EV_IRQHandler( CPAL_InitTypeDef* pDevInitStruct)
       I2C_SLAVE_RXNE_Handle(pDevInitStruct);
     }
  #endif /* CPAL_I2C_IT_PROGMODEL */
-    
+
     /*----------------------------------------*/
     /*------------- If NACK event ------------*/
     if ((I2CFlagStatus & CPAL_I2C_EVT_NACK) != 0)
     {
       I2C_SLAVE_NACK_Handle(pDevInitStruct);
-    }    
-    
+    }
+
     /*----------------------------------------*/
     /*------------- If STOP event ------------*/
     if ((I2CFlagStatus & CPAL_I2C_EVT_STOP) != 0)
@@ -1296,7 +1286,7 @@ uint32_t CPAL_I2C_EV_IRQHandler( CPAL_InitTypeDef* pDevInitStruct)
   *         in order to recover the correct communication status or call specific
   *         user functions.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
-  * @retval CPAL_PASS. 
+  * @retval CPAL_PASS.
   */
 uint32_t CPAL_I2C_ER_IRQHandler(CPAL_InitTypeDef* pDevInitStruct)
 {
@@ -1366,7 +1356,7 @@ uint32_t CPAL_I2C_ER_IRQHandler(CPAL_InitTypeDef* pDevInitStruct)
 #ifdef CPAL_I2C_DMA_PROGMODEL
 /**
   * @brief  Handle I2C DMA TX interrupt request when DMA programming Model is
-  *         used for data transmission. 
+  *         used for data transmission.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
   * @retval CPAL_PASS.
   */
@@ -1403,7 +1393,7 @@ uint32_t CPAL_I2C_DMA_TX_IRQHandler(CPAL_InitTypeDef* pDevInitStruct)
       /* Call DMA TX TC UserCallback */
       CPAL_I2C_DMATXTC_UserCallback(pDevInitStruct);
     }
-    
+
   }
   /*------------- If HT interrupt ------------*/
   else if ((__CPAL_I2C_HAL_GET_DMATX_HTIT(pDevInitStruct->CPAL_Dev)) != 0)
@@ -1437,14 +1427,14 @@ uint32_t CPAL_I2C_DMA_TX_IRQHandler(CPAL_InitTypeDef* pDevInitStruct)
 
 /**
   * @brief  Handle I2C DMA RX interrupt request when DMA programming Model is
-  *         used for data reception.  
+  *         used for data reception.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
-  * @retval CPAL_PASS. 
+  * @retval CPAL_PASS.
   */
 uint32_t CPAL_I2C_DMA_RX_IRQHandler(CPAL_InitTypeDef* pDevInitStruct)
 {
   /* Reinitialize Timeout Value to default (no timeout initiated) */
-  pDevInitStruct->wCPAL_Timeout = CPAL_I2C_TIMEOUT_DEFAULT; 
+  pDevInitStruct->wCPAL_Timeout = CPAL_I2C_TIMEOUT_DEFAULT;
 
   CPAL_LOG("\n\r\n\rLOG <CPAL_I2C_DMA_RX_IRQHandler> : I2C Device RX DMA ");
 
@@ -1452,7 +1442,7 @@ uint32_t CPAL_I2C_DMA_RX_IRQHandler(CPAL_InitTypeDef* pDevInitStruct)
   if ((__CPAL_I2C_HAL_GET_DMARX_TCIT(pDevInitStruct->CPAL_Dev)) != 0)
   {
     CPAL_LOG("\n\rLOG : I2C Device RX Complete");
-    
+
     /* If DMA normal mode */
     if ((pDevInitStruct->wCPAL_Options & CPAL_OPT_DMARX_CIRCULAR) == 0)
     {
@@ -1467,7 +1457,7 @@ uint32_t CPAL_I2C_DMA_RX_IRQHandler(CPAL_InitTypeDef* pDevInitStruct)
 
       /* Call DMA RX TC UserCallback */
       CPAL_I2C_DMARXTC_UserCallback(pDevInitStruct);
-      
+
       /* If No Stop Condition Generation option bit selected */
       if (((pDevInitStruct->wCPAL_Options & CPAL_OPT_I2C_NOSTOP) != 0) && (pDevInitStruct->CPAL_Mode == CPAL_MODE_SLAVE))
       {
@@ -1478,7 +1468,7 @@ uint32_t CPAL_I2C_DMA_RX_IRQHandler(CPAL_InitTypeDef* pDevInitStruct)
         pDevInitStruct->CPAL_State = CPAL_STATE_READY;
 
         /* Call TX transfer complete UserCallback */
-        CPAL_I2C_TXTC_UserCallback(pDevInitStruct);
+        CPAL_I2C_RXTC_UserCallback(pDevInitStruct);
       }
     }
     /* If DMA circular mode */
@@ -1524,7 +1514,7 @@ uint32_t CPAL_I2C_DMA_RX_IRQHandler(CPAL_InitTypeDef* pDevInitStruct)
 /**
   * @brief  This function Manages I2C Timeouts when waiting for specific events.
   * @param  None
-  * @retval CPAL_PASS or CPAL_FAIL. 
+  * @retval CPAL_PASS or CPAL_FAIL.
   */
 void CPAL_I2C_TIMEOUT_Manager(void)
 {
@@ -1570,7 +1560,7 @@ void CPAL_I2C_TIMEOUT_Manager(void)
 /**
   * @brief  This function Manages I2C Timeouts when Timeout occurred.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
-  * @retval CPAL_PASS or CPAL_FAIL. 
+  * @retval CPAL_PASS or CPAL_FAIL.
   */
 uint32_t CPAL_I2C_Timeout (CPAL_InitTypeDef* pDevInitStruct)
 {
@@ -1593,12 +1583,12 @@ uint32_t CPAL_I2C_Timeout (CPAL_InitTypeDef* pDevInitStruct)
 /**
   * @brief  Handles Master TCR interrupt event.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
-  * @retval CPAL_PASS or CPAL_FAIL. 
+  * @retval CPAL_PASS or CPAL_FAIL.
   */
 static uint32_t I2C_MASTER_TCR_Handle(CPAL_InitTypeDef* pDevInitStruct)
 {
   CR2_tmp = 0;
-  
+
   /* If DMA programming model */
   if (pDevInitStruct->CPAL_ProgModel == CPAL_PROGMODEL_DMA)
   {
@@ -1624,10 +1614,10 @@ static uint32_t I2C_MASTER_TCR_Handle(CPAL_InitTypeDef* pDevInitStruct)
     {
       /* Update Num_Data */
       Num_Data = pDevInitStruct->pCPAL_TransferTx->wNumData;
-      
+
       /* Set Nbytes to wNumData */
       CR2_tmp |= (uint32_t)((uint32_t)(Num_Data) << 16);
-      
+
       /* Disable reload */
       CR2_tmp &= ~I2C_CR2_RELOAD;
     }
@@ -1636,10 +1626,10 @@ static uint32_t I2C_MASTER_TCR_Handle(CPAL_InitTypeDef* pDevInitStruct)
     {
       /* Set Nbytes to wNumData */
       CR2_tmp |= (uint32_t)((uint32_t)(255) << 16);
-      
+
       /* Enaable reload */
       CR2_tmp |= I2C_CR2_RELOAD;
-    }    
+    }
   }
   /* If master receiver */
   else
@@ -1652,35 +1642,35 @@ static uint32_t I2C_MASTER_TCR_Handle(CPAL_InitTypeDef* pDevInitStruct)
 
       /* Set Nbytes to wNumData */
       CR2_tmp |= (uint32_t)((uint32_t)(Num_Data) << 16);
-      
+
       /* Disable reload */
       CR2_tmp &= ~I2C_CR2_RELOAD;
-      
+
     }
     /* If remaining number of data is greater than 255 */
     else
     {
       /* Set Nbytes to wNumData */
       CR2_tmp |= (uint32_t)((uint32_t)(255) << 16);
-      
+
       /* Enaable reload */
       CR2_tmp |= I2C_CR2_RELOAD;
     }
   }
-  
+
   /* Update CR2 Register */
   __CPAL_I2C_HAL_CR2_UPDATE(pDevInitStruct->CPAL_Dev, CR2_tmp);
-  
+
   return CPAL_PASS;
 }
 
 /**
   * @brief  Handles Master TC interrupt event.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
-  * @retval CPAL_PASS or CPAL_FAIL. 
+  * @retval CPAL_PASS or CPAL_FAIL.
   */
 static uint32_t I2C_MASTER_TC_Handle(CPAL_InitTypeDef* pDevInitStruct)
-{  
+{
   /* No Stop Condition Generation option bit is not selected */
   if ((pDevInitStruct->wCPAL_Options & CPAL_OPT_I2C_NOSTOP) == 0)
   {
@@ -1689,22 +1679,22 @@ static uint32_t I2C_MASTER_TC_Handle(CPAL_InitTypeDef* pDevInitStruct)
   }
   /* No Stop Condition Generation option bit is selected */
   else
-  { 
+  {
     /* Disable master interrupts */
     __CPAL_I2C_HAL_DISABLE_MASTER_IT(pDevInitStruct->CPAL_Dev);
 
     /* If master transmitter */
     if (pDevInitStruct->CPAL_State == CPAL_STATE_BUSY_TX)
     {
-  #ifdef CPAL_I2C_IT_PROGMODEL      
-      /* If Interrupt Programming Model */      
+  #ifdef CPAL_I2C_IT_PROGMODEL
+      /* If Interrupt Programming Model */
       if (pDevInitStruct->CPAL_ProgModel == CPAL_PROGMODEL_INTERRUPT)
       {
         /* Disable TX interrupt */
         __CPAL_I2C_HAL_DISABLE_TXIE_IT(pDevInitStruct->CPAL_Dev);
       }
   #endif /* CPAL_I2C_IT_PROGMODEL */
-      
+
       /* Update CPAL_State to CPAL_STATE_READY */
       pDevInitStruct->CPAL_State = CPAL_STATE_READY;
 
@@ -1722,10 +1712,10 @@ static uint32_t I2C_MASTER_TC_Handle(CPAL_InitTypeDef* pDevInitStruct)
         __CPAL_I2C_HAL_DISABLE_RXIE_IT(pDevInitStruct->CPAL_Dev);
       }
   #endif /* CPAL_I2C_IT_PROGMODEL */
-      
+
       /* Update CPAL_State to CPAL_STATE_READY */
       pDevInitStruct->CPAL_State = CPAL_STATE_READY;
-      
+
       /* Call RX Transfer complete Callback */
       CPAL_I2C_RXTC_UserCallback(pDevInitStruct);
     }
@@ -1736,7 +1726,7 @@ static uint32_t I2C_MASTER_TC_Handle(CPAL_InitTypeDef* pDevInitStruct)
 /**
   * @brief  Handles Master STOP interrupt event.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
-  * @retval CPAL_PASS or CPAL_FAIL. 
+  * @retval CPAL_PASS or CPAL_FAIL.
   */
 static uint32_t I2C_MASTER_STOP_Handle(CPAL_InitTypeDef* pDevInitStruct)
 {
@@ -1745,25 +1735,25 @@ static uint32_t I2C_MASTER_STOP_Handle(CPAL_InitTypeDef* pDevInitStruct)
   {
     /* Set CPAL_State to CPAL_STATE_ERROR */
     pDevInitStruct->CPAL_State = CPAL_STATE_ERROR;
-    
+
     /* Clear STOP flag */
     __CPAL_I2C_HAL_CLEAR_STOP(pDevInitStruct->CPAL_Dev);
   }
   else
-  {  
+  {
     /* Clear STOP flag */
     __CPAL_I2C_HAL_CLEAR_STOP(pDevInitStruct->CPAL_Dev);
-    
+
     CPAL_LOG("\n\r\n\rLOG <I2C_EV_IRQHandler> : I2C Device Master IT");
-    
+
     CPAL_LOG("\n\rLOG : I2C Device Stop Generated");
-    
+
     /* Disable master interrupt */
     __CPAL_I2C_HAL_DISABLE_MASTER_IT(pDevInitStruct->CPAL_Dev);
-    
+
     /* Wait until BUSY flag is reset */
     __CPAL_I2C_TIMEOUT(!(__CPAL_I2C_HAL_GET_BUSY(pDevInitStruct->CPAL_Dev)), CPAL_I2C_TIMEOUT_BUSY);
-    
+
     /* If master transmitter */
     if (pDevInitStruct->CPAL_State == CPAL_STATE_BUSY_TX)
     {
@@ -1778,7 +1768,7 @@ static uint32_t I2C_MASTER_STOP_Handle(CPAL_InitTypeDef* pDevInitStruct)
 
       /* Update CPAL_State to CPAL_STATE_READY */
       pDevInitStruct->CPAL_State = CPAL_STATE_READY;
-      
+
       /* Call TX Transfer complete Callback */
       CPAL_I2C_TXTC_UserCallback(pDevInitStruct);
     }
@@ -1796,7 +1786,7 @@ static uint32_t I2C_MASTER_STOP_Handle(CPAL_InitTypeDef* pDevInitStruct)
 
       /* Update CPAL_State to CPAL_STATE_READY */
       pDevInitStruct->CPAL_State = CPAL_STATE_READY;
-      
+
       /* Call RX Transfer complete Callback */
       CPAL_I2C_RXTC_UserCallback(pDevInitStruct);
     }
@@ -1807,16 +1797,16 @@ static uint32_t I2C_MASTER_STOP_Handle(CPAL_InitTypeDef* pDevInitStruct)
 /**
   * @brief  Handles Master NACK interrupt event.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
-  * @retval CPAL_PASS or CPAL_FAIL. 
+  * @retval CPAL_PASS or CPAL_FAIL.
   */
 static uint32_t I2C_MASTER_NACK_Handle(CPAL_InitTypeDef* pDevInitStruct)
 {
   /* Update wCPAL_DevError */
   pDevInitStruct->wCPAL_DevError = CPAL_I2C_ERR_AF;
-  
+
   /* Clear NACK flag */
   __CPAL_I2C_HAL_CLEAR_NACK(pDevInitStruct->CPAL_Dev);
-  
+
   /* USE_SINGLE_ERROR_CALLBACK is defined in stm32f30x_i2c_cpal_conf.h file */
 #ifdef USE_SINGLE_ERROR_CALLBACK
   /* Call Error UserCallback */
@@ -1825,7 +1815,7 @@ static uint32_t I2C_MASTER_NACK_Handle(CPAL_InitTypeDef* pDevInitStruct)
   /* Call AF UserCallback */
   CPAL_I2C_AF_UserCallback(pDevInitStruct->CPAL_Dev);
 #endif /* USE_SINGLE_ERROR_CALLBACK */
-  
+
   return CPAL_PASS;
 }
 
@@ -1833,7 +1823,7 @@ static uint32_t I2C_MASTER_NACK_Handle(CPAL_InitTypeDef* pDevInitStruct)
 /**
   * @brief  Handles Master transmission TXIS interrupt event.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
-  * @retval CPAL_PASS or CPAL_FAIL. 
+  * @retval CPAL_PASS or CPAL_FAIL.
   */
 static uint32_t I2C_MASTER_TXIS_Handle(CPAL_InitTypeDef* pDevInitStruct)
 {
@@ -1845,7 +1835,7 @@ static uint32_t I2C_MASTER_TXIS_Handle(CPAL_InitTypeDef* pDevInitStruct)
 
   /* Decrement remaining number of data */
   pDevInitStruct->pCPAL_TransferTx->wNumData--;
-  
+
   if (pDevInitStruct->pCPAL_TransferTx->wNumData != 0)
   {
     /* Point to next data */
@@ -1857,7 +1847,7 @@ static uint32_t I2C_MASTER_TXIS_Handle(CPAL_InitTypeDef* pDevInitStruct)
 /**
   * @brief  Handles Master reception RXNE interrupt event.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
-  * @retval CPAL_PASS or CPAL_FAIL. 
+  * @retval CPAL_PASS or CPAL_FAIL.
   */
 static uint32_t I2C_MASTER_RXNE_Handle(CPAL_InitTypeDef* pDevInitStruct)
 {
@@ -1886,18 +1876,18 @@ static uint32_t I2C_MASTER_RXNE_Handle(CPAL_InitTypeDef* pDevInitStruct)
 /**
   * @brief  Handles Slave ADDR interrupt event.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
-  * @retval CPAL_PASS or CPAL_FAIL. 
+  * @retval CPAL_PASS or CPAL_FAIL.
   */
 static uint32_t I2C_SLAVE_ADDR_Handle(CPAL_InitTypeDef* pDevInitStruct)
-{  
-#ifdef CPAL_I2C_LISTEN_MODE  
+{
+#ifdef CPAL_I2C_LISTEN_MODE
   /* If slave receive request for write */
   if (__CPAL_I2C_HAL_GET_DIR(pDevInitStruct->CPAL_Dev) == 0)
   {
     pDevInitStruct->CPAL_State = CPAL_STATE_BUSY_RX;
 
     /* Call Slave receive UserCallback */
-    CPAL_I2C_SLAVE_READ_UserCallback(pDevInitStruct);    
+    CPAL_I2C_SLAVE_READ_UserCallback(pDevInitStruct);
   }
   /* If slave receive request for read */
   else
@@ -1905,10 +1895,10 @@ static uint32_t I2C_SLAVE_ADDR_Handle(CPAL_InitTypeDef* pDevInitStruct)
     pDevInitStruct->CPAL_State = CPAL_STATE_BUSY_TX;
 
     /* Call Slave Transmit UserCallback */
-    CPAL_I2C_SLAVE_WRITE_UserCallback(pDevInitStruct);    
+    CPAL_I2C_SLAVE_WRITE_UserCallback(pDevInitStruct);
   }
 #else
-  uint32_t slaveaddr = 0;  
+  uint32_t slaveaddr = 0;
 
   /* If 7 Bit Addressing Mode */
   if (pDevInitStruct->pCPAL_I2C_Struct->I2C_AcknowledgedAddress == I2C_AcknowledgedAddress_7bit)
@@ -1948,12 +1938,12 @@ static uint32_t I2C_SLAVE_ADDR_Handle(CPAL_InitTypeDef* pDevInitStruct)
 /**
   * @brief  Handles Slave STOP interrupt event.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
-  * @retval CPAL_PASS or CPAL_FAIL. 
+  * @retval CPAL_PASS or CPAL_FAIL.
   */
 static uint32_t I2C_SLAVE_STOP_Handle(CPAL_InitTypeDef* pDevInitStruct)
-{    
-  /* Clear STOP flag */  
-  __CPAL_I2C_HAL_CLEAR_STOP(pDevInitStruct->CPAL_Dev);  
+{
+  /* Clear STOP flag */
+  __CPAL_I2C_HAL_CLEAR_STOP(pDevInitStruct->CPAL_Dev);
 
   CPAL_LOG("\n\r\n\rLOG <I2C_EV_IRQHandler> : I2C Device Slave IT");
 
@@ -1993,7 +1983,7 @@ static uint32_t I2C_SLAVE_STOP_Handle(CPAL_InitTypeDef* pDevInitStruct)
   /* If slave receiver */
   else
   {
-  #ifdef CPAL_I2C_IT_PROGMODEL 
+  #ifdef CPAL_I2C_IT_PROGMODEL
     /* If Interrupt Programming Model */
     if (pDevInitStruct->CPAL_ProgModel == CPAL_PROGMODEL_INTERRUPT)
     {
@@ -2014,7 +2004,7 @@ static uint32_t I2C_SLAVE_STOP_Handle(CPAL_InitTypeDef* pDevInitStruct)
 /**
   * @brief  Handles Slave NACK interrupt event.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
-  * @retval CPAL_PASS or CPAL_FAIL. 
+  * @retval CPAL_PASS or CPAL_FAIL.
   */
 static uint32_t I2C_SLAVE_NACK_Handle(CPAL_InitTypeDef* pDevInitStruct)
 {
@@ -2026,7 +2016,7 @@ static uint32_t I2C_SLAVE_NACK_Handle(CPAL_InitTypeDef* pDevInitStruct)
   {
     /* Disable slave interrupt */
     __CPAL_I2C_HAL_DISABLE_SLAVE_IT(pDevInitStruct->CPAL_Dev);
-    
+
   #ifdef CPAL_I2C_IT_PROGMODEL
     /* If Interrupt Programming Model */
     if (pDevInitStruct->CPAL_ProgModel == CPAL_PROGMODEL_INTERRUPT)
@@ -2035,7 +2025,7 @@ static uint32_t I2C_SLAVE_NACK_Handle(CPAL_InitTypeDef* pDevInitStruct)
       __CPAL_I2C_HAL_DISABLE_TXIE_IT(pDevInitStruct->CPAL_Dev);
     }
   #endif /* CPAL_I2C_IT_PROGMODEL */
-    
+
     /* Update CPAL_State to CPAL_STATE_READY */
     pDevInitStruct->CPAL_State = CPAL_STATE_READY;
 
@@ -2049,7 +2039,7 @@ static uint32_t I2C_SLAVE_NACK_Handle(CPAL_InitTypeDef* pDevInitStruct)
 /**
   * @brief  Handles Slave transmission TXIS interrupt event.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
-  * @retval CPAL_PASS or CPAL_FAIL. 
+  * @retval CPAL_PASS or CPAL_FAIL.
   */
 static uint32_t I2C_SLAVE_TXIS_Handle(CPAL_InitTypeDef* pDevInitStruct)
 {
@@ -2077,7 +2067,7 @@ static uint32_t I2C_SLAVE_TXIS_Handle(CPAL_InitTypeDef* pDevInitStruct)
 /**
   * @brief  Handles Slave reception RXNE interrupt event.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
-  * @retval CPAL_PASS or CPAL_FAIL. 
+  * @retval CPAL_PASS or CPAL_FAIL.
   */
 static uint32_t I2C_SLAVE_RXNE_Handle(CPAL_InitTypeDef* pDevInitStruct)
 {
@@ -2086,13 +2076,13 @@ static uint32_t I2C_SLAVE_RXNE_Handle(CPAL_InitTypeDef* pDevInitStruct)
   {
     /* Read Byte */
     *(pDevInitStruct->pCPAL_TransferRx->pbBuffer) = __CPAL_I2C_HAL_RECEIVE(pDevInitStruct->CPAL_Dev);
-    
+
     /* Call RX UserCallback */
     CPAL_I2C_RX_UserCallback(pDevInitStruct);
-    
+
     /* Decrement remaining number of data */
     pDevInitStruct->pCPAL_TransferRx->wNumData--;
-    
+
     /* If data remaining for reception */
     if (pDevInitStruct->pCPAL_TransferRx->wNumData != 0)
     {
@@ -2104,13 +2094,13 @@ static uint32_t I2C_SLAVE_RXNE_Handle(CPAL_InitTypeDef* pDevInitStruct)
     {
       /* Disable slave interrupt */
       __CPAL_I2C_HAL_DISABLE_SLAVE_IT(pDevInitStruct->CPAL_Dev);
-      
+
       /* Disable RX interrupt */
       __CPAL_I2C_HAL_DISABLE_RXIE_IT(pDevInitStruct->CPAL_Dev);
-      
+
       /* Update CPAL_State to CPAL_STATE_READY */
       pDevInitStruct->CPAL_State = CPAL_STATE_READY;
-      
+
       /* Call RX Transfer complete Callback */
       CPAL_I2C_RXTC_UserCallback(pDevInitStruct);
     }
@@ -2129,19 +2119,19 @@ static uint32_t I2C_SLAVE_RXNE_Handle(CPAL_InitTypeDef* pDevInitStruct)
   * @brief  This function Configures and enables I2C DMA before starting transfer phase.
   * @param  pDevInitStruct: Pointer to the peripheral configuration structure.
   * @param  Direction : Transfer direction.
-  * @retval CPAL_PASS or CPAL_FAIL. 
+  * @retval CPAL_PASS or CPAL_FAIL.
   */
 static uint32_t I2C_Enable_DMA (CPAL_InitTypeDef* pDevInitStruct, CPAL_DirectionTypeDef Direction)
-{    
+{
   /* If data transmission will be performed */
   if ((pDevInitStruct->CPAL_State == CPAL_STATE_BUSY_TX) || (Direction == CPAL_DIRECTION_TX))
   {
     /* Configure TX DMA channels */
     CPAL_I2C_HAL_DMATXConfig(pDevInitStruct->CPAL_Dev, pDevInitStruct->pCPAL_TransferTx, pDevInitStruct->wCPAL_Options);
-    
+
     /* Enable TX DMA channels */
     __CPAL_I2C_HAL_ENABLE_DMATX(pDevInitStruct->CPAL_Dev);
-    
+
     CPAL_LOG("\n\rLOG : I2C Device DMA TX Configured and Enabled");
   }
   /* If data reception will be performed */
@@ -2149,13 +2139,13 @@ static uint32_t I2C_Enable_DMA (CPAL_InitTypeDef* pDevInitStruct, CPAL_Direction
   {
     /* Configure RX DMA channels */
     CPAL_I2C_HAL_DMARXConfig(pDevInitStruct->CPAL_Dev, pDevInitStruct->pCPAL_TransferRx, pDevInitStruct->wCPAL_Options);
-    
+
     /* Enable RX DMA channels */
     __CPAL_I2C_HAL_ENABLE_DMARX(pDevInitStruct->CPAL_Dev);
-    
+
     CPAL_LOG("\n\rLOG : I2C Device DMA RX Configured and Enabled");
-  }    
-  return CPAL_PASS;  
+  }
+  return CPAL_PASS;
 }
 #endif /* CPAL_I2C_DMA_PROGMODEL */
 

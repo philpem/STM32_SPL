@@ -1,14 +1,14 @@
 /**
   ******************************************************************************
-  * @file    Project/STM32F30x_StdPeriph_Templates/main.h 
+  * @file    main.h 
   * @author  MCD Application Team
-  * @version V1.0.0
-  * @date    23-October-2012
+  * @version V1.1.0
+  * @date    04-April-2014
   * @brief   Header for main.c module
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2014 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -31,19 +31,11 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f30x.h"
-#include "stm32303c_eval.h"
-#include <stdio.h>
-
-#if defined (USE_STM32303C_EVAL)
- #include "stm32303c_eval_lcd.h"
-#endif
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
-void TimingDelay_Decrement(void);
-void Delay(__IO uint32_t nTime);
 
 #endif /* __MAIN_H */
 

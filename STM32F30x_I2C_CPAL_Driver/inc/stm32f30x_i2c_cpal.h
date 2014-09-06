@@ -2,14 +2,14 @@
   ******************************************************************************
   * @file    stm32f30x_i2c_cpal.h
   * @author  MCD Application Team
-  * @version V1.0.1
-  * @date    23-October-2012
+  * @version V1.1.0
+  * @date    04-April-2014
   * @brief   This file contains all the functions prototypes for the I2C firmware
   *          layer.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2014 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
   *
   *        http://www.st.com/software_license_agreement_liberty_v2
   *
-  * Unless required by applicable law or agreed to in writing, software 
-  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   * See the License for the specific language governing permissions and
   * limitations under the License.
@@ -39,7 +39,7 @@
 #ifdef __cplusplus
  extern "C" {
 #endif
-   
+
 /* Exported types ------------------------------------------------------------*/
 /*========= CPAL_Dev_TypeDef =========*/
 /* CPAL devices enumeration contains the device instances */
@@ -48,7 +48,9 @@ typedef enum
 {
   CPAL_I2C1       =   0x00,	    /*!< Use I2C1 device */
 
-  CPAL_I2C2       =   0x01      /*!< Use I2C2 device */
+  CPAL_I2C2       =   0x01,         /*!< Use I2C2 device */
+
+  CPAL_I2C3       =   0x02          /*!< Use I2C3 device */
 
 }CPAL_DevTypeDef;
 
@@ -157,14 +159,14 @@ typedef enum
                                          device status structure.*/
 }CPAL_StateTypeDef;
 
-/*========= CPAL_I2CError_TypeDef =========*/ 
+/*========= CPAL_I2CError_TypeDef =========*/
 /* I2C Errors TypeDef */
 
 typedef enum
 {
   CPAL_I2C_ERR_NONE      = 0x00000000, /*!<No Error: This is the default state for an Idle peripheral */
 
-  CPAL_I2C_ERR_TIMEOUT   = 0x000000FF, /*!<Timeout error: The specified timeout has been elapsed without 
+  CPAL_I2C_ERR_TIMEOUT   = 0x000000FF, /*!<Timeout error: The specified timeout has been elapsed without
                                          any response (expected flag or data didn't happen at expected time).*/
 
   CPAL_I2C_ERR_BERR      = 0x00000100, /*!<A bus error is detected when a START or a STOP condition is detected
@@ -208,7 +210,7 @@ typedef enum
 /*========= CPAL_Dev_TypeDef =========*/
 /* CPAL Device structure definition */
 
-typedef struct 
+typedef struct
 {
   CPAL_DevTypeDef         CPAL_Dev;          /*!<Instance of the device. This parameter can be one
                                                  of the following values: CPAL_Dev_TypeDef */
@@ -245,9 +247,9 @@ typedef struct
                                                  values: CPAL_Options_Enum. When a value is not selected the relative
                                                  feature is disabled */
 
-  __IO uint32_t           wCPAL_Timeout;     /*!<This field is with timeout procedure. its used to detect timeout */    
+  __IO uint32_t           wCPAL_Timeout;     /*!<This field is with timeout procedure. its used to detect timeout */
 
-  I2C_InitTypeDef*        pCPAL_I2C_Struct;  /*!<Pointer to a device Initialization structure as described 
+  I2C_InitTypeDef*        pCPAL_I2C_Struct;  /*!<Pointer to a device Initialization structure as described
                                                  in the standard device library driver.
                                                  A NULL pointer can be provided for this field and, in this case,
                                                  the default values will be used for all the device initialization.
@@ -270,14 +272,18 @@ extern CPAL_InitTypeDef* I2C_DevStructures[];
 /* CPAL Global Device Structures are the Global default structures which
    are used to handle devices configuration and status.*/
 
-#ifdef CPAL_USE_I2C1 
+#ifdef CPAL_USE_I2C1
 extern CPAL_InitTypeDef I2C1_DevStructure;
 #endif /* CPAL_USE_I2C1 */
 
-#ifdef CPAL_USE_I2C2 
+#ifdef CPAL_USE_I2C2
 extern CPAL_InitTypeDef I2C2_DevStructure;
 #endif /* CPAL_USE_I2C2 */
- 
+
+#ifdef CPAL_USE_I2C3
+extern CPAL_InitTypeDef I2C3_DevStructure;
+#endif /* CPAL_USE_I2C3 */
+
 /* Exported constants --------------------------------------------------------*/
 
 /*========= CPAL_Options_TypeDef =========*/
@@ -327,8 +333,8 @@ extern CPAL_InitTypeDef I2C2_DevStructure;
                                                                     master transmitter to master receiver mode with No stop generation option enabled */
 
 #define CPAL_OPT_I2C_WAKEUP_STOP        ((uint32_t)0x20000000)  /*!<Enable the WakeUp from stop capability for the I2C slave device */
- 
-#define CPAL_OPT_I2C_NACK_ADD           ((uint32_t)0x40000000)  /*!<Initialize the I2C Slave device without enabling the acknowledgement of its 
+
+#define CPAL_OPT_I2C_NACK_ADD           ((uint32_t)0x40000000)  /*!<Initialize the I2C Slave device without enabling the acknowledgement of its
                                                                     own address. This option must not be used with No Stop generation mode */
 
 /*========= CPAL_Interne_Defines =========*/
@@ -362,23 +368,23 @@ uint32_t  CPAL_I2C_StructInit   (CPAL_InitTypeDef* pDevInitStruct); /*<!This fun
                                                                         pointer. To avoid all risks, it is recommended to declare
                                                                         application local variables and fill these fields with their
                                                                         pointers.*/
-                                                                        
-#if defined (CPAL_I2C_MASTER_MODE) || ! defined (CPAL_I2C_LISTEN_MODE) 
+
+#if defined (CPAL_I2C_MASTER_MODE) || ! defined (CPAL_I2C_LISTEN_MODE)
 uint32_t  CPAL_I2C_Write        (CPAL_InitTypeDef* pDevInitStruct); /*<!This function Writes data to the specified I2C device.
                                                                         All information relative to the write transfer parameters and
                                                                         current status are extracted from pCPAL_TransferTx field defined
-                                                                        in @ref CPAL_Transfer_TypeDef */ 
+                                                                        in @ref CPAL_Transfer_TypeDef */
 
-uint32_t  CPAL_I2C_Read         (CPAL_InitTypeDef* pDevInitStruct); /*<!This function Read data from the specified I2C device 
+uint32_t  CPAL_I2C_Read         (CPAL_InitTypeDef* pDevInitStruct); /*<!This function Read data from the specified I2C device
                                                                         All information relative to the read transfer parameters and
                                                                         current status are extracted from pCPAL_TransferTx field defined
-                                                                        in @ref CPAL_Transfer_TypeDef */ 
+                                                                        in @ref CPAL_Transfer_TypeDef */
 
-#endif /* CPAL_I2C_MASTER_MODE || ! CPAL_I2C_LISTEN_MODE */ 
+#endif /* CPAL_I2C_MASTER_MODE || ! CPAL_I2C_LISTEN_MODE */
 
 
 #if defined (CPAL_I2C_LISTEN_MODE) && defined (CPAL_I2C_SLAVE_MODE)
-uint32_t  CPAL_I2C_Listen       (CPAL_InitTypeDef* pDevInitStruct); /*<!This function allows the specified I2C device to enter listen mode 
+uint32_t  CPAL_I2C_Listen       (CPAL_InitTypeDef* pDevInitStruct); /*<!This function allows the specified I2C device to enter listen mode
                                                                         All information relative to the read or write transfer parameters and
                                                                         current status are extracted from fields defined in @ref CPAL_Transfer_TypeDef */
 #endif /* CPAL_I2C_LISTEN_MODE && CPAL_I2C_SLAVE_MODE */
@@ -403,13 +409,13 @@ void CPAL_HAL_NVICInit(void); /*<! Initialize NVIC Priority Group */
 
 /*========== CPAL_TIMEOUT_Callback ==========*/
 
-#ifndef CPAL_TIMEOUT_UserCallback 
+#ifndef CPAL_TIMEOUT_UserCallback
  uint32_t CPAL_TIMEOUT_UserCallback(CPAL_InitTypeDef* pDevInitStruct);   /*<!This function is called when a Timeout
                                                                              occurs during communication with devices */
 #endif
 
 /*========= CPAL_I2C_User_Callbacks =========*/
-/* These functions prototypes only are declared here. User can (optionally) 
+/* These functions prototypes only are declared here. User can (optionally)
    implement the function body in his own application depending on the application needs.
    Each callback is called in a particular situation detailed in the callback description.*/
 
@@ -436,7 +442,7 @@ void CPAL_I2C_RXTC_UserCallback(CPAL_InitTypeDef* pDevInitStruct); /*<!This func
 #endif
 
 #ifndef CPAL_I2C_DMATXTC_UserCallback
-void CPAL_I2C_DMATXTC_UserCallback(CPAL_InitTypeDef* pDevInitStruct); /*<!This function is called (in DMA mode) when 
+void CPAL_I2C_DMATXTC_UserCallback(CPAL_InitTypeDef* pDevInitStruct); /*<!This function is called (in DMA mode) when
                                                                           DMA Transmission is finished (If Transfer Complete
                                                                           interrupt is enabled) */
 #endif
@@ -524,7 +530,7 @@ void CPAL_I2C_SLAVE_WRITE_UserCallback(CPAL_InitTypeDef* pDevInitStruct); /*<!Th
                                                                        (If I2C Error interrupt is enabled) */
   #endif
 
-  #ifndef CPAL_I2C_OVR_UserCallback 
+  #ifndef CPAL_I2C_OVR_UserCallback
    void  CPAL_I2C_OVR_UserCallback(CPAL_DevTypeDef pDevInstance); /*<!This callback is called when an Overrun/Underrun
                                                                       ERROR occurred on the peripheral while transferring
                                                                       (If I2C Error interrupt is enabled) */

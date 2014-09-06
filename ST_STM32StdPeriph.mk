@@ -9,7 +9,7 @@ $(PFX)_PFP := $(dir $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
 $(PFX)_VALID_PLATFORMS := STM32F030 STM32F031 STM32F051 STM32F072 STM32F042 STM23F0XX_MD STM32F0XX_LD STM32F0XX_HD STM32F030X8 STM32F030X6
 $(PFX)_VALID_PLATFORMS += STM32F10X_LD STM32F10X_LD_VL STM32F10X_MD STM32F10X_MD_VL STM32F10X_HD STM32F10X_HD_VL STM32F10X_XL STM32F10X_CL
 $(PFX)_VALID_PLATFORMS += STM32F2XX
-$(PFX)_VALID_PLATFORMS += STM32F30X
+$(PFX)_VALID_PLATFORMS += STM32F30X STM32F303xC STM32F334x8 STM32F301x8 STM32F302x8
 $(PFX)_VALID_PLATFORMS += STM32F37X
 $(PFX)_VALID_PLATFORMS += STM32F40_41xxx STM32F427_437xx STM32F429_439xx STM32F401xx
 $(PFX)_VALID_PLATFORMS += STM32L1XX_MD STM32L1XX_MDP STM32L1XX_HD STM32L1XX_XL
@@ -39,7 +39,7 @@ ifneq ($(filter STM32F2XX,$(PLATFORM)),)
   $(PFX)_PFMDIR := STM32F2xx
 endif
 
-ifneq ($(filter STM32F30X,$(PLATFORM)),)
+ifneq ($(filter STM32F30X STM32F303xC STM32F334x8 STM32F302x8,$(PLATFORM)),)
   $(PFX)_PFMDIR := STM32F30x
 endif
 
@@ -65,6 +65,10 @@ endif
 # Library specific options
 # These apply to all platforms which use a specific library
 #############################################################################
+
+ifeq ($($(PFX)_PFMDIR),)
+  $(error ERROR: $$(PFX)_PFMDIR is NOT SET. Something is wrong with the Platform Specific Options.)
+endif
 
 # Library specific options define two things: the list of modules available
 # for a given platform (_MODULES) and the filename prefix for each module
