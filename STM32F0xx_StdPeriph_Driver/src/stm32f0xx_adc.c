@@ -721,7 +721,7 @@ void ADC_ChannelConfig(ADC_TypeDef* ADCx, uint32_t ADC_Channel, uint32_t ADC_Sam
   assert_param(IS_ADC_SAMPLE_TIME(ADC_SampleTime));
 
   /* Configure the ADC Channel */
-  ADCx->CHSELR |= (uint32_t)ADC_Channel;
+  ADCx->CHSELR = (uint32_t)ADC_Channel;
 
   /* Clear the Sampling time Selection bits */
   tmpreg &= ~ADC_SMPR1_SMPR;
