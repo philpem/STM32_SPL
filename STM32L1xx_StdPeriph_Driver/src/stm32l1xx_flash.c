@@ -1220,7 +1220,7 @@ FLASH_Status FLASH_OB_WRP2Config(uint32_t OB_WRP2, FunctionalState NewState)
 FLASH_Status FLASH_OB_RDPConfig(uint8_t OB_RDP)
 {
   FLASH_Status status = FLASH_COMPLETE;
-  uint8_t tmp1 = 0;
+  uint16_t tmp1 = 0;
   uint32_t tmp2 = 0;
   
   /* Check the parameters */
@@ -1228,7 +1228,7 @@ FLASH_Status FLASH_OB_RDPConfig(uint8_t OB_RDP)
   status = FLASH_WaitForLastOperation(FLASH_ER_PRG_TIMEOUT);
   
   /* calculate the option byte to write */
-  tmp1 = (uint8_t)(~(OB_RDP ));
+  tmp1 = (~((uint32_t)OB_RDP) & 0xFF) | ((~OB->RDP) & 0xFF00);
   tmp2 = (uint32_t)(((uint32_t)((uint32_t)(tmp1) << 16)) | ((uint32_t)OB_RDP));
   
   if(status == FLASH_COMPLETE)
